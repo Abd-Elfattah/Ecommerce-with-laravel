@@ -27,7 +27,7 @@ Route::get('test' , function(){
 });
 
 
-// Admin USers Routes
+// Admin Users Routes
 Route::get('admin/users/adminstrators' , 'AdminUsersController@adminstrators')->name('users.adminstrators');
 Route::get('admin/users/clients' , 'AdminUsersController@clients')->name('users.clients');
 
@@ -36,5 +36,14 @@ Route::get('admin/users' , 'AdminUsersController@index')->name('admin.users.inde
 Route::get('admin/users/create' , 'AdminUsersController@create')->name('admin.users.create');
 Route::get('admin/users/{id}/edit' , 'AdminUsersController@edit')->name('admin.users.edit');
 
-// Route::get('admin/users/adminstrators' , 'AdminUsersController@adminstrators')->name('admin.users.adminstrators');
-// Route::get('admin/users/clients' , 'AdminUsersController@clients')->name('admin.users.clients');
+
+
+// Admin Category Controller
+Route::get('admin/categories/{id}' , 'CategoryController@destroy')->name('category.delete');
+Route::get('admin/categories/{id}/edit' , 'CategoryController@edit')->name('category.edit');
+
+
+Route::resource('admin/categories' , 'CategoryController');
+Route::get('admin/categories' , 'CategoryController@index')->name('admin.categories');
+
+
