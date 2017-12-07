@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 
-use App\Category;
 
-class CategoryController extends Controller
+use App\Category;
+use App\Subcategory;
+
+class SubCategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +18,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return view('admin.category.index' , compact('categories'));
+        $subs = Subcategory::paginate(10);
+
+        return view('admin.subcategory.index' , compact('subs') );
     }
 
     /**
@@ -26,8 +29,9 @@ class CategoryController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        //
+    {   
+        $categories = Category::pluck('name','id');
+        return view('admin.subcategory.create' , compact('categories'));
     }
 
     /**
@@ -40,13 +44,16 @@ class CategoryController extends Controller
     {
         $input = $request->all();
 
-        $category = Category::create($input);
+        $category_id = $input['category_id'] ;
+        $category = Category::findOrFail($category_id);
 
-        if($category){
-            Session::flash('createCategory' , 'The category Has Been created Successfully');
+        $sub = $category->subcategories()->create($input);
+
+        if($sub){
+            Session::flash('createSub' , 'The Sub-Category Has Been Created Successfully');
         }
 
-        return redirect()->back();
+        return redirect()->route('sub.index');
     }
 
     /**
@@ -68,11 +75,11 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
+        $categories = Category::pluck('name' , 'id');
 
-        $category = Category::findOrFail($id);
+        $sub = Subcategory::findOrFail($id);
 
-        return view('admin.category.edit'  , compact('category'));
-        
+        return view('admin.subcategory.edit' , compact('categories' , 'sub'));
     }
 
     /**
@@ -84,23 +91,15 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         $input = $request->all();
 
-        if(trim($input['name']) == ''){
-            Session::flash('emptyCategory' , 'The Category field is Empty');
-            return redirect()->back();
-        }else{
-
-            $category = Category::findOrFail($id);
-
-            if($category->update($input)){
-                Session::flash('editCategory' , 'The Category Has been updated Successfully');
-            }
-            
-            return  redirect('admin/categories');
+        $sub = Subcategory::findOrFail($id);
+        if( $sub->update($input) ){
+            Session::flash('editSub' , 'The Sub-Category Has Been Updated Successfully');
         }
 
-
+        return redirect()->back();
     }
 
     /**
@@ -111,15 +110,16 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+        $sub = Subcategory::findOrFail($id);
 
-        $category = Category::findOrFail($id);
-
-        if($category->delete()){
-            Session::flash('deleteCategory' , 'The category Has Been Deleted Successfully');
+        if( $sub->delete() ){
+            Session::flash('deleteSub' , 'The Sub-Category Has Been Deleted Successfully' );
         }
 
-        return redirect()->back();
+        return redirect('admin/subcategories');
     }
 
 
+
+    
 }

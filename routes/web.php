@@ -1,5 +1,6 @@
 <?php
 use App\User;
+use App\Subcategory;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -20,10 +21,15 @@ Route::get('admin' , ['as'=>'admin' , function(){
 
 
 Route::get('test' , function(){
-	$user = User::findOrFail(7);
-	$user->update(['is_admin'=>'mahmpdosk']);
+	$sub = Subcategory::findOrFail(1);
+	// if($sub->attr4 == ''){
+	// 	return "empty column";
+	// }
 
-	return $user;
+	$sub->attr4 == null;
+	$sub->save();
+
+	// return $user;
 });
 
 
@@ -41,9 +47,31 @@ Route::get('admin/users/{id}/edit' , 'AdminUsersController@edit')->name('admin.u
 // Admin Category Controller
 Route::get('admin/categories/{id}' , 'CategoryController@destroy')->name('category.delete');
 Route::get('admin/categories/{id}/edit' , 'CategoryController@edit')->name('category.edit');
-
-
 Route::resource('admin/categories' , 'CategoryController');
 Route::get('admin/categories' , 'CategoryController@index')->name('admin.categories');
 
 
+
+
+// Admin SubCategories
+Route::resource('admin/subcategories' , 'SubCategoryController');
+Route::get('admin/subcategories/create' , 'SubCategoryController@create')->name('sub.create');
+Route::get('admin/subcategories/{id}/edit' , 'SubCategoryController@edit')->name('sub.edit');
+Route::get('admin/subcategories' , 'SubCategoryController@index')->name('sub.index');
+
+
+
+
+// Admin Brands
+Route::get('admin/brands' , 'BrandController@index')->name('brand.index');
+Route::get('admin/brands/create' , 'BrandController@create')->name('brand.create');
+Route::post('admin/brands' , 'BrandController@store');
+Route::get('admin/brands/{id}/edit' , 'BrandController@edit')->name('brand.edit');
+Route::patch('admin/brands/{id}' , 'BrandController@update');
+Route::get('admin/brands/{id}' , 'BrandController@destroy');
+
+//Route::resource('admin/brands' , 'BrandController');
+
+Route::get('admin/sub/{id}/brands' , 'BrandController@subBrands')->name('sub.brands');
+
+Route::get('ajaxSub' , 'BrandController@ajaxSub');

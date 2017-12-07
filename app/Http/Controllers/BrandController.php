@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
-
 use App\Category;
+use App\Subcategory;
+use App\Brand;
 
-class CategoryController extends Controller
+class BrandController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,8 +17,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::all();
-        return view('admin.category.index' , compact('categories'));
+        $brands = Brand::paginate(10);
+
+        return view('admin.brand.index',compact('brands'));
     }
 
     /**
@@ -27,7 +29,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //
+        $categories = Category::all();
+        return view('admin.brand.create' , compact('categories'));
     }
 
     /**
@@ -40,13 +43,13 @@ class CategoryController extends Controller
     {
         $input = $request->all();
 
-        $category = Category::create($input);
+        $brand = Brand::create($input);
 
-        if($category){
-            Session::flash('createCategory' , 'The category Has Been created Successfully');
+        if($brand){
+            Session::flash('createBrand' , 'The Brand Has Been created successfully');
         }
 
-        return redirect()->back();
+        return redirect('admin/brands');
     }
 
     /**
@@ -68,11 +71,12 @@ class CategoryController extends Controller
      */
     public function edit($id)
     {
-
-        $category = Category::findOrFail($id);
-
-        return view('admin.category.edit'  , compact('category'));
+        $brand = Brand::findOrFail($id);
+        $cat = $brand->subcategory->category;
+        $subs = $cat->subcategories;
+        $categories = Category::all();        
         
+        return view('admin.brand.edit',compact('categories','brand','subs'));
     }
 
     /**
@@ -84,23 +88,17 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $brand = Brand::findOrFail($id);
+
         $input = $request->all();
 
-        if(trim($input['name']) == ''){
-            Session::flash('emptyCategory' , 'The Category field is Empty');
-            return redirect()->back();
-        }else{
+        $brand->update($input);
 
-            $category = Category::findOrFail($id);
-
-            if($category->update($input)){
-                Session::flash('editCategory' , 'The Category Has been updated Successfully');
-            }
-            
-            return  redirect('admin/categories');
+        if($brand){
+            Session::flash('editBrand' , 'The Brand Has Been Updated successfully');
         }
 
-
+        return redirect()->back();
     }
 
     /**
@@ -111,15 +109,32 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
+        $brand = Brand::findOrFail($id);
 
-        $category = Category::findOrFail($id);
-
-        if($category->delete()){
-            Session::flash('deleteCategory' , 'The category Has Been Deleted Successfully');
+        if($brand->delete()){
+            Session::flash('deleteBrand' , 'The Brand Has Been Deleted successfully');
         }
 
-        return redirect()->back();
+        return redirect('admin/brands');
     }
 
 
+
+
+
+
+    public function subBrands($id){
+        $sub = Subcategory::findOrFail($id);
+        $brands = Brand::whereSubcategoryId( $sub->id )->paginate(6);
+
+        return view('admin.brand.index' , compact('brands'));
+    }
+
+
+    public function ajaxSub(Request $request){
+
+        $data = Subcategory::select('id','name')->where('category_id',$request->id)->get();
+
+        return response()->json($data);
+    }
 }

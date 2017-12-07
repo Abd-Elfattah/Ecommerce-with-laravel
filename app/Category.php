@@ -14,4 +14,9 @@ class Category extends Model
     public function setNameAttribute($value){
     	$this->attributes['name'] = ucwords($value);
     }
+
+
+    public function subcategories(){
+    	return $this->hasMany('App\Subcategory');
+    }
 }

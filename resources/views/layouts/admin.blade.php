@@ -176,10 +176,10 @@
 
 
                     <li>
-                        <a href="tables.html"><i class="fa fa-fw fa-table"></i> Tables</a>
+                        <a href="{{ route('sub.index') }}"><i class="fa fa-fw fa-table"></i> Sub-Categories</a>
                     </li>
                     <li>
-                        <a href="forms.html"><i class="fa fa-fw fa-edit"></i> Forms</a>
+                        <a href="{{ route('brand.index') }}"><i class="fa fa-fw fa-edit"></i> Brands</a>
                     </li>
                     <li>
                         <a href="bootstrap-elements.html"><i class="fa fa-fw fa-desktop"></i> Bootstrap Elements</a>
@@ -219,6 +219,9 @@
 
     <!-- Bootstrap Core JavaScript -->
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+
+
+    @yield('scripts')
 
 </body>
 
