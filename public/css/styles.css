@@ -1,0 +1,34 @@
+
+
+.discount{
+	background-color:#da4f49;
+	color:white;
+	padding: 8px 13px;
+	font-size:15px;
+	margin-right: 10px;
+	font-weight: bold;
+}
+
+
+.before-discount{
+	text-decoration: line-through;
+	color: #b8b894;
+	font-size:16px;
+}
+
+.product-name{
+	margin-bottom: 20px;
+	font-size: 20px;
+}
+
+.price{
+	color:#006dcc;
+	margin-left:8px;
+	font-size:19px;
+}
+
+.product-image{
+	width:200px;
+	height: 190px;
+}
+

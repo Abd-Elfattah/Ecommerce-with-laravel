@@ -19,6 +19,11 @@ class Brand extends Model
     	return $this->belongsTo('App\Subcategory');
     }
 
+    
+    public function products(){
+        return $this->hasMany('App\Product');
+    }    
+
 
 
     public function setNameAttribute($value){

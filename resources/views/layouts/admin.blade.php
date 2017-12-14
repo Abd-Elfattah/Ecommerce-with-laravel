@@ -20,6 +20,8 @@
     <!-- Custom Fonts -->
     <link href="{{asset('css/font-awesome.min.css')}}" rel="stylesheet" type="text/css">
 
+    @yield('styles')
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -29,7 +31,7 @@
 
 </head>
 
-<body>
+<body style="background-color:white;">
 
     <div id="wrapper">
 
@@ -182,7 +184,7 @@
                         <a href="{{ route('brand.index') }}"><i class="fa fa-fw fa-edit"></i> Brands</a>
                     </li>
                     <li>
-                        <a href="bootstrap-elements.html"><i class="fa fa-fw fa-desktop"></i> Bootstrap Elements</a>
+                        <a href="{{ route('products.index') }}"><i class="fa fa-fw fa-desktop"></i> Products</a>
                     </li>
                     <li>
                         <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Bootstrap Grid</a>

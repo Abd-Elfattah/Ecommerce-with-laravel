@@ -30,6 +30,10 @@ class Subcategory extends Model
 
 
 
+    public function products(){
+        return $this->hasManyThrough('App\Product' , 'App\Brand');
+    }
+
 
 
     // Mutrators Model Manipulation

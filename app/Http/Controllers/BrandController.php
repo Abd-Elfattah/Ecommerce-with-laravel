@@ -131,10 +131,18 @@ class BrandController extends Controller
     }
 
 
+
+
     public function ajaxSub(Request $request){
 
         $data = Subcategory::select('id','name')->where('category_id',$request->id)->get();
 
         return response()->json($data);
+    }
+
+
+    public function ajaxBrand(Request $request){
+        $brands = Brand::select('id','name')->where('subcategory_id',$request->id)->get();
+        return response()->json($brands);
     }
 }
