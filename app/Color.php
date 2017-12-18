@@ -14,6 +14,10 @@ class Color extends Model
     	return $this->belongsToMany('App\Product')->withPivot('quantity')->withTimestamps();
     }
 
+    public function photos(){
+    	return $this->hasMany('App\Photo');
+    }
+
 
 
 }

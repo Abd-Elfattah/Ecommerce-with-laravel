@@ -11,7 +11,7 @@
         <tr><th> I AM ALREADY REGISTERED  </th></tr>
          <tr> 
          <td>
-            <form class="form-horizontal" role="form" method="POST" action="{{ url('/login') }}">
+            <form class="form-horizontal" role="form" method="POST" action="{{ url('Eco-home/login') }}">
                  {{ csrf_field() }}
                 <div class="control-group{{ $errors->has('email') ? ' has-error' : '' }}">
                   <label class="control-label" for="email" >E-mail</label>
@@ -53,7 +53,7 @@
 
                 <div class="control-group">
                   <div class="controls">
-                        <button type="submit" class="btn btn-primary" style="margin-right:6px">Login</button>OR <a href="{{url('/register')}}" class="btn">Register Now!</a>
+                        <button type="submit" class="btn btn-primary" style="margin-right:6px">Login</button>OR <a href="{{url('Eco-home/register')}}" class="btn">Register Now!</a>
                   </div>
                 </div>
 

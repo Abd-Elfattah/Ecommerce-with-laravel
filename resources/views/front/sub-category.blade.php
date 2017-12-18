@@ -31,7 +31,7 @@
 	products are available </small></h3>	
 	<hr class="soft"/>
 	
-	<!-- <form class="form-horizontal span6">
+	<form class="form-horizontal span6">
 		<div class="control-group">
 		  <label class="control-label alignL">Sort By </label>
 			<select>
@@ -41,7 +41,7 @@
               <option>Price Lowest first</option>
             </select>
 		</div>
-	  </form> -->
+	  </form>
 
 	  
 
@@ -88,11 +88,11 @@
 						<li class="span3">
 							
 						  <div class="thumbnail">
-							<a href="{!! url('Eco-home/product',$product->id) !!}">
+							<a href="{{ route('Eco-home.product' , $product->id) }}">
 							<img class="product-image" src="{{ asset($product->photos->first()->path) }}" alt=""/>
 							</a>
 							<div class="caption">
-							  <h5 class="product-name" style="margin-bottom: 30px;"><a  href="{!! url('Eco-home/product',$product->id) !!}">{{$product->name}}</a></h5>
+							  <h5 class="product-name" style="margin-bottom: 30px;"><a  href="{{ route('Eco-home.product' , $product->id) }}">{{$product->name}}</a></h5>
 
 
 
@@ -104,7 +104,7 @@
 								<!-- if offer price found -->
 								  <h4 style="text-align:center"><input type="hidden" class="product-id" value="{{ $product->id }}">
 
-						@if(Auth::check())	
+						<!-- @if(Auth::check())	
 							@if(Session::has('cart_id'))
 								@if(in_array($product->id , Session::get('cart_id')) == 1 )
 								   <a style="font-weight:bold"  class="btn btn-danger product-cart">Remove <i class="icon-shopping-cart"></i>
@@ -130,7 +130,28 @@
 							<a style="font-weight:bold" href="{{ url('/login') }}" class="btn">Add To <i class="icon-shopping-cart"></i>
 							</a>
 
+						@endif -->
+				@if( $color_id=$product->colors()->first() )
+					@if($color_product=$product->colors()->withPivot('id')->first()->pivot)
+						@if(Session::has('cart'))
+							@if(array_key_exists($color_product->id , Session::get('cart')->items))
+							
+								<a style="font-weight:bold"  class="btn btn-danger product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Remove <i class="icon-shopping-cart"></i>
+								   		</a>
+							@else
+								<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Add To <i class="icon-shopping-cart"></i>
+								   		</a>
+							@endif
+
+						@else
+
+								<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Add To <i class="icon-shopping-cart"></i>
+								   		</a>
 						@endif
+					@endif
+
+				@endif
+
 
 								   <!-- if offer price found -->
 								  
@@ -157,31 +178,24 @@
 							@if($product->offer_price == 0)
 							  
 							   		 <h4 style="text-align:center"><input type="hidden" class="product-id" value="{{ $product->id }}" >
-							   	@if(Auth::check())
-							   		 	@if(Session::has('cart_id'))
-								  		@if(in_array($product->id , Session::get('cart_id')) == 1 )
-									   <a style="font-weight:bold"  class="btn btn-danger product-cart">Remove <i class="icon-shopping-cart"></i>
-									   </a> 
+								@if( $color_id=$product->colors()->first() )
+									@if($color_product=$product->colors()->withPivot('id')->first()->pivot)
+										@if(Session::has('cart'))
+											@if(array_key_exists($color_product->id , Session::get('cart')->items))
+											
+												<a style="font-weight:bold"  class="btn btn-danger product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Remove <i class="icon-shopping-cart"></i>
+												   		</a>
+											@else
+												<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Add To <i class="icon-shopping-cart"></i>
+												   		</a>
+											@endif
 
-									   		@endif 
+										@else
 
-									   		@if(in_array($product->id , Session::get('cart_id')) == 0 )
-								   		<a style="font-weight:bold"  class="btn product-cart">Add To <i class="icon-shopping-cart"></i>
-									   </a> 
-									   		@endif
-
-									   	@endif
-
-									   	@if(!Session::has('cart_id'))
-
-									   		<a style="font-weight:bold"  class="btn product-cart">Add To <i class="icon-shopping-cart"></i>
-									   		</a>
-
-
-									   @endif
-								@else
-										<a style="font-weight:bold" href="{{ url('/login') }}" class="btn">Add To <i class="icon-shopping-cart"></i>
-										</a>
+												<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Add To <i class="icon-shopping-cart"></i>
+												   		</a>
+										@endif
+									@endif
 
 								@endif	   
 									   
@@ -232,58 +246,58 @@
 	
 				
 
-				$(document).ready(function(){
+			// 	$(document).ready(function(){
 				
-					$('.product-cart').click(function(){
+			// 		$('.product-cart').click(function(){
 
-						var product_id = $(this).parent().find('.product-id').val();
+			// 			var product_id = $(this).parent().find('.product-id').val();
 
-						if($(this).hasClass('btn-danger')){
-							$.ajax({
-								type:'get',
-								url:'{!!URL::to('removeFromCartAjax')!!}',
-								data:{'id':product_id},
-								success:function(cart_count){
+			// 			if($(this).hasClass('btn-danger')){
+			// 				$.ajax({
+			// 					type:'get',
+			// 					url:'{!!URL::to('removeFromCartAjax')!!}',
+			// 					data:{'id':product_id},
+			// 					success:function(cart_count){
 								
-									$('.new-cart-update').text(cart_count);
+			// 						$('.new-cart-update').text(cart_count);
 									
 
 
-								},
-								error:function(){
+			// 					},
+			// 					error:function(){
 									
-								}
-							})
+			// 					}
+			// 				})
 
-							$(this).removeClass('btn-danger').html('Add To <i class="icon-shopping-cart"></i>');
-
-
+			// 				$(this).removeClass('btn-danger').html('Add To <i class="icon-shopping-cart"></i>');
 
 
 
-						// Add Session Product to Cart
-						}else{
-							$.ajax({
-								type:'get',
-								url:'{!!URL::to('addToCartAjax')!!}',
-								data:{'id':product_id},
-								success:function(cart_count){
-									$('.new-cart-update').text(cart_count);
-
-								},
-								error:function(){
-
-								}
-							})
 
 
-							$(this).addClass('btn-danger').html('Remove <i class="icon-shopping-cart"></i>');
+			// 			// Add Session Product to Cart
+			// 			}else{
+			// 				$.ajax({
+			// 					type:'get',
+			// 					url:'{!!URL::to('addToCartAjax')!!}',
+			// 					data:{'id':product_id},
+			// 					success:function(cart_count){
+			// 						$('.new-cart-update').text(cart_count);
+
+			// 					},
+			// 					error:function(){
+
+			// 					}
+			// 				})
+
+
+			// 				$(this).addClass('btn-danger').html('Remove <i class="icon-shopping-cart"></i>');
 							
-						}
+			// 			}
 
 						
-					});
-			});
+			// 		});
+			// });
 
 
 		</script>

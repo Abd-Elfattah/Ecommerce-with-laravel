@@ -17,6 +17,7 @@ return [
     */
 
     'driver' => env('SESSION_DRIVER', 'file'),
+    // 'lockfile_dir' => '/path/to/my/lockdir'
 
     /*
     |--------------------------------------------------------------------------

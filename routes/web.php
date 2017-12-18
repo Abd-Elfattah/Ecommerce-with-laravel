@@ -18,103 +18,128 @@ use Illuminate\Support\Facades\Session;
 */
 
 
-
 Route::get('test' , function(){
-	Session::flush('cart_id');
-	Session::flush('cart');
+	// Session::flush('cart_id');
+	Session::forget('cart');
 	// return Session::get('cart_id');
 	// return Session::get('cart');
-	
+	// return Session::get('cart')->totQty;
+	// return $color_product = Product::find(4)->colors()->where('color_id' , 6)->withPivot('id')->first()->pivot;
+	// return Session::get('cart')->items[6]['discount'];
 });
 
 
-// Important
-Route::get('admin' , function(){
-	return view('admin.index');
-})->name('admin');
-
-// Admin Users Routes
-Route::get('admin/users/adminstrators' , 'AdminUsersController@adminstrators')->name('users.adminstrators');
-Route::get('admin/users/clients' , 'AdminUsersController@clients')->name('users.clients');
-
-Route::resource('admin/users' , 'AdminUsersController');
-Route::get('admin/users' , 'AdminUsersController@index')->name('admin.users.index');
-Route::get('admin/users/create' , 'AdminUsersController@create')->name('admin.users.create');
-Route::get('admin/users/{id}/edit' , 'AdminUsersController@edit')->name('admin.users.edit');
-
-
-
-// Admin Category Controller
-Route::get('admin/categories/{id}' , 'CategoryController@destroy')->name('category.delete');
-Route::get('admin/categories/{id}/edit' , 'CategoryController@edit')->name('category.edit');
-Route::resource('admin/categories' , 'CategoryController');
-Route::get('admin/categories' , 'CategoryController@index')->name('admin.categories');
-
-
-
-
-// Admin SubCategories
-Route::resource('admin/subcategories' , 'SubCategoryController');
-Route::get('admin/subcategories/create' , 'SubCategoryController@create')->name('sub.create');
-Route::get('admin/subcategories/{id}/edit' , 'SubCategoryController@edit')->name('sub.edit');
-Route::get('admin/subcategories' , 'SubCategoryController@index')->name('sub.index');
-
-
-// Admin Brands
-Route::get('admin/brands' , 'BrandController@index')->name('brand.index');
-Route::get('admin/brands/create' , 'BrandController@create')->name('brand.create');
-Route::post('admin/brands' , 'BrandController@store');
-Route::get('admin/brands/{id}/edit' , 'BrandController@edit')->name('brand.edit');
-Route::patch('admin/brands/{id}' , 'BrandController@update');
-Route::get('admin/brands/{id}' , 'BrandController@destroy');
-Route::get('admin/sub/{id}/brands' , 'BrandController@subBrands')->name('sub.brands');
-
-Route::get('ajaxSub' , 'BrandController@ajaxSub');
-Route::get('ajaxBrand' , 'BrandController@ajaxBrand');
-
-
-// Admin Products 
-Route::resource('admin/products' , 'ProductController');
-Route::post('admin/products2/{id}' , 'ProductController@secondStore');
-Route::post('admin/products3/{id}/{color_id}' , 'ProductController@thirdStore');
-Route::get('admin/product/details/{id}' , 'ProductController@adminProductDetails');
-Route::get('admin/product/{id}/add-color' , 'ProductController@createColor');
-
-
-
-
-// Front-End Controller
-Route::get('Eco-home' , 'FrontController@home');
-Route::get('Eco-home/sub-category/{id}' , 'FrontController@subProducts');
-Route::get('Eco-home/product/{id}','FrontController@displyProduct');
-Route::get('addToCartAjax' , 'FrontController@addToCartAjax');
-Route::get('removeFromCartAjax' , 'FrontController@removeFromCartAjax');
-Route::get('Eco-home/cart' , 'FrontController@displayCart');
-Route::get('Eco-home/special-offers', 'FrontController@offers');
-// Route::group(['middleware' => 'auth']  , function(){
-	
-// });
-
-
-Route::get('/deleteFromCart/{id}', 'FrontController@deleteFromCart');
-Auth::routes();
-
-//Route::get('/home', 'HomeController@index');
-Route::get('/logout', function(){
-	Auth::logout();
-	return redirect()->back();
-});
-
-Route::get('/login',function(){
-	return view('auth.login');
-});
-Route::get('/register',function(){
-	return view('auth.register');
-});
-
-// define cats for all views
+// Display All Categories
 View::composer('*', function($view)
 {
 	$cats = Category::all();
     $view->with('cats',$cats);
 });
+
+
+
+Route::get('/error404' , function(){
+	return view('errors.404');
+})->name('error404');
+
+
+// Important Admin Middleware Group
+Route::group(['middleware'=> ['admin']] , function(){
+	Route::get('admin' , function(){
+		return view('admin.index');
+	})->name('admin');
+
+	// Admin Users Routes
+	Route::get('admin/users/adminstrators' , 'AdminUsersController@adminstrators')->name('users.adminstrators');
+	Route::get('admin/users/clients' , 'AdminUsersController@clients')->name('users.clients');
+
+	Route::resource('admin/users' , 'AdminUsersController');
+	Route::get('admin/users' , 'AdminUsersController@index')->name('admin.users.index');
+	Route::get('admin/users/create' , 'AdminUsersController@create')->name('admin.users.create');
+	Route::get('admin/users/{id}/edit' , 'AdminUsersController@edit')->name('admin.users.edit');
+
+
+
+	// Admin Category Controller
+	Route::get('admin/categories/{id}' , 'CategoryController@destroy')->name('category.delete');
+	Route::get('admin/categories/{id}/edit' , 'CategoryController@edit')->name('category.edit');
+	Route::resource('admin/categories' , 'CategoryController');
+	Route::get('admin/categories' , 'CategoryController@index')->name('admin.categories');
+
+
+
+
+	// Admin SubCategories
+	Route::resource('admin/subcategories' , 'SubCategoryController');
+	Route::get('admin/subcategories/create' , 'SubCategoryController@create')->name('sub.create');
+	Route::get('admin/subcategories/{id}/edit' , 'SubCategoryController@edit')->name('sub.edit');
+	Route::get('admin/subcategories' , 'SubCategoryController@index')->name('sub.index');
+
+
+	// Admin Brands
+	Route::get('admin/brands' , 'BrandController@index')->name('brand.index');
+	Route::get('admin/brands/create' , 'BrandController@create')->name('brand.create');
+	Route::post('admin/brands' , 'BrandController@store');
+	Route::get('admin/brands/{id}/edit' , 'BrandController@edit')->name('brand.edit');
+	Route::patch('admin/brands/{id}' , 'BrandController@update');
+	Route::get('admin/brands/{id}' , 'BrandController@destroy');
+	Route::get('admin/sub/{id}/brands' , 'BrandController@subBrands')->name('sub.brands');
+	Route::get('ajaxSub' , 'BrandController@ajaxSub');
+	Route::get('ajaxBrand' , 'BrandController@ajaxBrand');
+
+
+	// Admin Products 
+	Route::resource('admin/products' , 'ProductController');
+	Route::post('admin/products2/{id}' , 'ProductController@secondStore');
+	Route::post('admin/products3/{id}/{color_id}' , 'ProductController@thirdStore');
+	Route::get('admin/product/details/{id}' , 'ProductController@adminProductDetails')->name('product.details');
+	Route::post('admin/product/{id}/addDiscount' , 'ProductController@addDiscount');
+	Route::get('admin/product/{id}/deleteDiscount' , 'ProductController@deleteDiscount')->name('delete.discount');
+
+
+	// Admin Color Controller
+	Route::get('admin/product/{id}/add-color' , 'ColorController@createColor1')->name('product.create-color-1');
+	Route::post('admin/product/{id}/storecolor' , 'ColorController@storeColor');
+	Route::delete('admin/product/{pro_id}/color/{color_id}/delete' , 'ColorController@deleteColor');
+	Route::post('admin/product/{id}/storecolorimages/{color_id}' , 'ColorController@storeColorImages');
+	Route::post('admin/product/{product_id}/color/{id}/addQuantity' ,'ColorController@addQuantity');
+	Route::get('admin/product/{product_id}/color/{color_id}/images' , 'ColorController@colorImages')->name('color.images');
+	Route::get('admin/product/{product_id}/color/{color_id}/addImages' , 'ColorController@addImagesForColor')->name('color.add.images');
+	Route::get('admin/product/{{product_id}}/color/{color_id}/storeImages' , 'ColorController@storeNewColorImages');
+	Route::get('admin/product/color/images/{id}/delete' , 'ColorController@deleteImage')->name('color.images.delete');
+});
+
+
+
+// Middleware Auth
+Route::group(['middleware' => 'auth']  , function(){
+	Route::get('/logout', function(){
+		Auth::logout();
+		return redirect()->back();
+	});
+});
+
+// Front-End Controller
+Route::get('Eco-home' , 'FrontController@home')->name('homePage');
+Route::get('Eco-home/sub-category/{id}' , 'FrontController@subProducts');
+Route::get('Eco-home/product/{id}','FrontController@displyProduct')->name('Eco-home.product');
+// Route::get('addToCartAjax' , 'FrontController@addToCartAjax');
+// Route::get('removeFromCartAjax' , 'FrontController@removeFromCartAjax');
+Route::get('Eco-home/special-offers', 'FrontController@offers');
+Route::get('Eco-home/product/{product_id}/color/{color_id}' , 'FrontController@productColor')->name('product.color');
+
+
+
+// Cart Controller
+Route::get('Eco-home/cart' , 'CartController@show')->name('cart.show');
+Route::get('Eco-home/product/{product_id}/color/{color_id}/addToCart' , 'CartController@addToCart')->name('product.addToCart');
+Route::get('Eco-home/product/{product_id}/color/{color_id}/removeFromCart' , 'CartController@removeFromCart')->name('product.removeFromCart');
+Route::get('Eco-home/product/{product_id}/color/{color_id}/changeQuantity/{count}' , 'CartController@changeQuantity')->name('product.changeQuantity');
+
+
+
+
+Auth::routes();
+Route::auth();
+
+

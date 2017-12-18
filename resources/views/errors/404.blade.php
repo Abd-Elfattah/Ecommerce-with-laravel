@@ -46,7 +46,6 @@
 
 	<link href="{{ asset('css/styles.css') }}" rel="stylesheet"/>
 
-    @yield('styles')
 
 
 	<!-- End-Styles -->
@@ -93,14 +92,14 @@
 	 <!-- <li class=""><a href="contact.html">Contact</a></li> -->
 @if(Auth::check())
 	 <li class="">
-	 <a href="{{route('cart.show')}}"><span class="btn btn-primary" ><i class="icon-shopping-cart icon-white" style="font-size:19px; text-shadow: 1px 1px 1px #ccc;"></i>
-	 [ <span class="new-cart-update">{{ Session::has('cart') ? count(Session::get('cart')->items) : "0"}}</span> ]
+	 <a href="{!! url('Eco-home/cart') !!}"><span class="btn btn-primary" ><i class="icon-shopping-cart icon-white" style="font-size:19px; text-shadow: 1px 1px 1px #ccc;"></i>
+	 [ <span class="new-cart-update">{{ Session::has('cart_id') ? count(Session::get('cart_id')) : "0"}}</span> ]
 	 </span></a>
 	 </li>
 @else
 	<li class="">
-	 <a href="{{ route('login')}}"><span class="btn btn-primary" ><i class="icon-shopping-cart icon-white" style="font-size:19px; text-shadow: 1px 1px 1px #ccc;"></i>
-	 [ <span class="new-cart-update">0</span> ]
+	 <a href="{!! url('/login') !!}"><span class="btn btn-primary" ><i class="icon-shopping-cart icon-white" style="font-size:19px; text-shadow: 1px 1px 1px #ccc;"></i>
+	 [ <span class="new-cart-update">{{ Session::has('cart_id') ? count(Session::get('cart_id')) : "0"}}</span> ]
 	 </span></a>
 	 </li>
 @endif
@@ -146,76 +145,9 @@
 
 
 <div id="mainBody">
-	<div class="container" style="margin-top:20px;">
-	<div class="row">
-<!-- Sidebar ================================================== -->
-	<div id="sidebar" class="span3">
-	@if(Auth::check())
-		<div class="well well-small"><a id="myCart" href="{{route('cart.show')}}"><img src="{{ asset('themes/images/ico-cart.png') }}" alt="cart">
-		<span class="new-cart-update">{{ Session::has('cart') ? count(Session::get('cart')->items) : "0"}}</span> Items in cart 
-	@else
-		<div class="well well-small"><a id="myCart" href="{{route('login')}}"><img src="{{ asset('themes/images/ico-cart.png') }}" alt="cart">
-		<span class="new-cart-update">0</span> Items in cart
-	@endif
-
-		
-		<span class="badge badge-warning pull-right">{{ Session::has('cart') ? Session::get('cart')->totPrice : "0" }} EGP</span>
-		
-		</a></div>
-		
-		<ul id="sideManu" class="nav nav-tabs nav-stacked" style="margin-bottom:30px">
-
-			@if($cats)
-
-				@foreach($cats as $cat)
-					<li class="subMenu open"><a>{{ $cat->name }}</a>
-						<ul>
-							@foreach($cat->subcategories as $sub)
-								<li><a class="active" href="{!! url('Eco-home/sub-category' , $sub->id) !!}"><i class="icon-chevron-right"></i>{{$sub->name}}</a></li>
-							@endforeach
-						</ul>
-					</li>
-				@endforeach
-
-			@endif
-			
-			
-		</ul>
-		<br/>
-		  <!-- <div class="thumbnail">
-			<img src="themes/images/products/panasonic.jpg" alt="Bootshop panasonoc New camera"/>
-			<div class="caption">
-			  <h5>Panasonic</h5>
-				<h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">$222.00</a></h4>
-			</div>
-		  </div><br/>
-			<div class="thumbnail">
-				<img src="themes/images/products/kindle.png" title="Bootshop New Kindel" alt="Bootshop Kindel">
-				<div class="caption">
-				  <h5>Kindle</h5>
-				    <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">$222.00</a></h4>
-				</div>
-			  </div><br/> -->
-			<div class="thumbnail">
-				<img src="{{asset('themes/images/payment_methods.png')}}" title="Bootshop Payment Methods" alt="Payments Methods">
-				<div class="caption">
-				  <h5>Payment Methods</h5>
-				</div>
-			  </div>
-	</div>
-<!-- Sidebar end=============================================== -->
-
-
-
-
-
-		@yield('content')
-
-
-
-
-
-		
+	<div class="container" style="margin-top:20px; height:410px;">
+		<div class="row">
+			<h1 style="margin-left: 400px">Error 404, Page Not Found</h1>
 		</div>
 	</div>
 </div>
@@ -273,7 +205,7 @@
     <script src="{{ asset('themes/js/jquery.lightbox-0.5.js') }}"></script>
 
 
-    @yield('scripts')
+    
 
 	<!-- Scripts -->
 

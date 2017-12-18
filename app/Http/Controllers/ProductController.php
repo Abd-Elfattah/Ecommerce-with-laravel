@@ -24,6 +24,16 @@ class ProductController extends Controller
         return view('admin.product.index',compact('products'));
     }
 
+    // public function test(){
+    //     $x=13; 
+    //     $y = 2342;
+    //     $z = [];
+    //     $z[] = $x;
+    //     $z[] = $y;
+    //     return redirect()->back();
+
+    // }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -109,6 +119,10 @@ class ProductController extends Controller
 
      }
 
+
+
+     
+
     /**
      * Display the specified resource.
      *
@@ -151,7 +165,17 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $photos = $product->photos;
+        foreach ($photos as $photo) {
+            unlink(public_path() . $photo->path);
+        }
+
+        $product->delete();
+
+
+        $products = Product::paginate(10);
+        return view('admin.product.index',compact('products'));
     }
 
 
@@ -160,6 +184,20 @@ class ProductController extends Controller
 
 
         return view('admin.product.productDetails',compact('product'));
+    }
+
+
+
+    public function addDiscount(Request $request ,$id){
+        $product = Product::findOrFail($id);
+        $product->update(['offer_price' => $request->offer_price ]);
+        return redirect()->back();
+    }
+
+    public function deleteDiscount($id){
+        $product = Product::findOrFail($id);
+        $product->update(['offer_price'=>0]);
+        return redirect()->back();
     }
 
 }
