@@ -4,6 +4,7 @@ use App\Subcategory;
 use App\Brand;
 use App\Category;
 use App\Product;
+
 use Illuminate\Support\Facades\Session;
 
 /*
@@ -12,20 +13,16 @@ use Illuminate\Support\Facades\Session;
 |--------------------------------------------------------------------------
 |
 | This file is where you may define all of the routes that are handled
-| by your application. Just tell Laravel the URIs it should respond
+| by your application. Just tell Laravel theU RIs it should respond
 | to using a Closure or controller method. Build something great!
 |
 */
 
 
-Route::get('test' , function(){
-	// Session::flush('cart_id');
-	Session::forget('cart');
-	// return Session::get('cart_id');
-	// return Session::get('cart');
-	// return Session::get('cart')->totQty;
-	// return $color_product = Product::find(4)->colors()->where('color_id' , 6)->withPivot('id')->first()->pivot;
-	// return Session::get('cart')->items[6]['discount'];
+Route::get('/test' , function(){
+	
+	return $cart = Session::get('cart')->totQty;	
+
 });
 
 
@@ -111,13 +108,7 @@ Route::group(['middleware'=> ['admin']] , function(){
 
 
 
-// Middleware Auth
-Route::group(['middleware' => 'auth']  , function(){
-	Route::get('/logout', function(){
-		Auth::logout();
-		return redirect()->back();
-	});
-});
+
 
 // Front-End Controller
 Route::get('Eco-home' , 'FrontController@home')->name('homePage');
@@ -136,10 +127,27 @@ Route::get('Eco-home/product/{product_id}/color/{color_id}/addToCart' , 'CartCon
 Route::get('Eco-home/product/{product_id}/color/{color_id}/removeFromCart' , 'CartController@removeFromCart')->name('product.removeFromCart');
 Route::get('Eco-home/product/{product_id}/color/{color_id}/changeQuantity/{count}' , 'CartController@changeQuantity')->name('product.changeQuantity');
 
+// Email Verification
+Route::get('verifyEmail/{email}/{verifyToken}' , 'FrontController@sendEmailDone')->name('sendEmailDone');
 
 
 
-Auth::routes();
+// Profile Controller
+Route::get('Eco-home/user/{user_id}/addresses' , 'ProfileController@userAddress')->name('user.address');
+Route::get('Eco-home/user/{user_id}/createAddresses' , 'ProfileController@createAddress')->name('user.create.address');
+Route::post('user/{user_id}/storeAddress' , 'ProfileController@storeAddress');
+
+
+
+// Users LogOut 
+Route::get('/Eco-home/logout' , function(){
+	Auth::logout();
+	return redirect()->back();
+})->name('logout')->middleware('auth');
+
+
+
+// Auth::routes();
 Route::auth();
 
 

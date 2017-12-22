@@ -6,6 +6,9 @@ use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Str;
+use Mail;
+use App\Mail\VerifyEmail;
 
 class RegisterController extends Controller
 {
@@ -63,11 +66,26 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'firstname' => $data['firstname'],
             'lastname' => $data['lastname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'verifyToken' => Str::random(40),
         ]);
+
+        
+        // $this->sendMail($user);
+        return $user;
     }
+
+
+    public function sendMail($user){
+
+        Mail::to($user->email)->send(new VerifyEmail($user) );
+    }
+
+
+
+    
 }

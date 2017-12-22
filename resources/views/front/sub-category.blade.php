@@ -24,7 +24,7 @@
     </ul>
 	<h3>{{$sub->name}} Products<small class="pull-right" style="margin-top:10px">
 	@if(!empty($products))
-		{{$count}}	
+		{{$sub->products->count()}}	
 	@else {{"No"}}
 
 	@endif
@@ -84,133 +84,105 @@
 
 		@if($products)
 			@foreach($products as $product)
-					
+				@foreach( $product->colors()->withPivot('id')->get() as $color )
+					@if( $color->pivot->quantity == 0 )	
+						<?php continue ?>
+					@elseif( $color->pivot->quantity > 0 )
 						<li class="span3">
 							
 						  <div class="thumbnail">
-							<a href="{{ route('Eco-home.product' , $product->id) }}">
-							<img class="product-image" src="{{ asset($product->photos->first()->path) }}" alt=""/>
+							<a href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">
+							<img class="product-image" src="{{ asset($color->photos()->where('product_id',$product->id)->first()->path) }}" alt=""/>
 							</a>
 							<div class="caption">
-							  <h5 class="product-name" style="margin-bottom: 30px;"><a  href="{{ route('Eco-home.product' , $product->id) }}">{{$product->name}}</a></h5>
+							  <h5 class="product-name" style="margin-bottom: 30px;"><a  href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">{{$product->name}}</a></h5>
 
 
 
-				<!-- if offer price found -->
-				@if($product->offer_price != 0)								  
+						<!-- if offer price found -->
+						@if($product->offer_price != 0)								  
+						<!-- if offer price found -->
+									  	<h4 style="text-align:center"><input type="hidden" class="product-id" value="{{ $product->id }}">
+
 									
-																	  
-						
-								<!-- if offer price found -->
-								  <h4 style="text-align:center"><input type="hidden" class="product-id" value="{{ $product->id }}">
-
-						<!-- @if(Auth::check())	
-							@if(Session::has('cart_id'))
-								@if(in_array($product->id , Session::get('cart_id')) == 1 )
-								   <a style="font-weight:bold"  class="btn btn-danger product-cart">Remove <i class="icon-shopping-cart"></i>
-								   </a> 
-
-								@endif 
-
-								@if(in_array($product->id , Session::get('cart_id')) == 0 )
-							   		<a style="font-weight:bold"  class="btn product-cart">Add To <i class="icon-shopping-cart"></i>
-								   </a> 
-								@endif
-
-						   	@endif
-
-							@if(!Session::has('cart_id'))
-
-								   		<a style="font-weight:bold"  class="btn product-cart">Add To <i class="icon-shopping-cart"></i>
-								   		</a>
-							@endif
-
-
-						@else
-							<a style="font-weight:bold" href="{{ url('/login') }}" class="btn">Add To <i class="icon-shopping-cart"></i>
-							</a>
-
-						@endif -->
-				@if( $color_id=$product->colors()->first() )
-					@if($color_product=$product->colors()->withPivot('id')->first()->pivot)
-						@if(Session::has('cart'))
-							@if(array_key_exists($color_product->id , Session::get('cart')->items))
 							
-								<a style="font-weight:bold"  class="btn btn-danger product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Remove <i class="icon-shopping-cart"></i>
-								   		</a>
-							@else
-								<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Add To <i class="icon-shopping-cart"></i>
-								   		</a>
-							@endif
-
-						@else
-
-								<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Add To <i class="icon-shopping-cart"></i>
-								   		</a>
-						@endif
-					@endif
-
-				@endif
-
-
-								   <!-- if offer price found -->
-								  
-							   	<span class="price">{{$product->offer_price}} EGP</span>
-							   		
-								   <!-- if offer price found -->
-
-							   	</h4>
-							   	<span class="discount" style="position:relative;top:-310px;left:-14px;">
-									{{ floor((100-(($product->offer_price/$product->price)*100)) ) }}% off
-									</span>
-							   	<p class="before-discount">
-										{{$product->price}} EGP
-								</p>
-			@endif
-			<!-- if offer price found -->
-
-
-
-
-
-
-							<!-- if No offer price found -->
-							@if($product->offer_price == 0)
-							  
-							   		 <h4 style="text-align:center"><input type="hidden" class="product-id" value="{{ $product->id }}" >
-								@if( $color_id=$product->colors()->first() )
-									@if($color_product=$product->colors()->withPivot('id')->first()->pivot)
-										@if(Session::has('cart'))
-											@if(array_key_exists($color_product->id , Session::get('cart')->items))
-											
-												<a style="font-weight:bold"  class="btn btn-danger product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Remove <i class="icon-shopping-cart"></i>
-												   		</a>
-											@else
-												<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Add To <i class="icon-shopping-cart"></i>
-												   		</a>
-											@endif
-
-										@else
-
-												<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color_id])}}">Add To <i class="icon-shopping-cart"></i>
-												   		</a>
-										@endif
+							@if($color_product=$color->pivot)
+								@if(Session::has('cart'))
+									@if(array_key_exists($color_product->id , Session::get('cart')->items))
+									
+										<a style="font-weight:bold"  class="btn btn-danger product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}">Remove <i class="icon-shopping-cart"></i>
+										   		</a>
+									@else
+										<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}">Add To <i class="icon-shopping-cart"></i>
+										   		</a>
 									@endif
 
-								@endif	   
-									   
-							   			<span class="price">{{$product->price}} EGP</span>
-							   			
-									  
+								@else
 
-							   	</h4>
+										<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}">Add To <i class="icon-shopping-cart"></i>
+										   		</a>
+								@endif
 							@endif
-							<!-- if No offer price found -->
+
+							
+
+
+										   <!-- if offer price found -->
+										   	<span class="price">{{$product->offer_price}} EGP</span>
+										   <!-- if offer price found -->
+
+										   	</h4>
+										   	<span class="discount" style="position:relative;top:-310px;left:-14px;">
+												{{ floor((100-(($product->offer_price/$product->price)*100)) ) }}% off
+												</span>
+										   	<p class="before-discount">
+													{{$product->price}} EGP
+											</p>
+						@endif
+						<!-- if offer price found -->
+
+
+
+						<!-- if No offer price found -->
+						@if($product->offer_price == 0)
+						  
+					   		 <h4 style="text-align:center"><input type="hidden" class="product-id" value="{{ $product->id }}" >
+						
+							@if($color_product=$color->pivot)
+								@if(Session::has('cart'))
+									@if(array_key_exists($color_product->id , Session::get('cart')->items))
+									
+										<a style="font-weight:bold"  class="btn btn-danger product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}">Remove <i class="icon-shopping-cart"></i>
+										   		</a>
+									@else
+										<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}">Add To <i class="icon-shopping-cart"></i>
+										   		</a>
+									@endif
+
+								@else
+
+										<a style="font-weight:bold"  class="btn product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}">Add To <i class="icon-shopping-cart"></i>
+										   		</a>
+								@endif
+							@endif
+
+							
+								   
+						   	<span class="price">{{$product->price}} EGP</span>
+						   			
+								  
+
+						   	</h4>
+						@endif
+						<!-- if No offer price found -->
 
 							   
 							</div>
 						  </div>
 						</li>
+						<?php break ?>
+					@endif
+				@endforeach
 			@endforeach
 		@endif
 

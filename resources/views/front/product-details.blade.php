@@ -22,19 +22,7 @@
     <li class="active">product Details</li>
     </ul>
 
-    <!-- <div class="row justify-content-center">
-	    <div class="col-md-8">
-	        <div class="row">
-
-	        	@foreach($photos as $photo)
-
-	            <a href="{{asset($photo->path)}}" data-toggle="lightbox" data-gallery="example-gallery" class="col-sm-4">
-	                <img src="{{asset($photo->path)}}" class="img-fluid">
-	            </a>
-	            @endforeach
-	        </div>
-	    </div>
-	</div> -->
+    
     
 	<div class="row">
 
@@ -49,21 +37,22 @@
 			
 			<div class="span5">
 				<h3>{{$product->name . " - " . $color->name . " color"}} 
-				@if( !$product->offer_price == 0)
+				@if( ($quantity = $color_product->quantity) >0 && !$product->offer_price == 0)
 				<span class="discount pull-right">
 					{{ floor(100 - ($product->offer_price/$product->price)*100 ) }}% off
 				</span>
 				@endif
 				</h3>
-				<!-- <small>- (14MP, 18x Optical Zoom) 3-inch LCD</small> -->
-				<hr class="soft"/>
+				@if( $quantity > 0)
+					<hr class="soft"/>
+				@endif
 				
 				  <div style="margin-bottom:30px">
 					<label class="control-label" style="width:300px">
-						@if($product->offer_price == 0)
+						@if($product->offer_price == 0 && $quantity > 0)
 							<span class="price">{{ $product->price }} EGP</span>
 							
-						@else
+						@elseif($quantity > 0)
 							<span class="price" style="font-size:19px;font-weight:bold">{{ $product->offer_price }} EGP</span>
 							<span class="before-discount" style="margin-left:15px">{{ $product->price }} EGP</span>
 						@endif
@@ -75,40 +64,14 @@
 						<input type="hidden" class="color-id" value="{{ $color->id }}">
 
 
-
-						<!-- @if(Auth::check())	
-							@if(Session::has('cart_id'))
-								@if(in_array($product->id , Session::get('cart_id')) == 1 )
-								   <button class="btn btn-large btn-primary pull-right product-cart"> Remove From <i class=" icon-shopping-cart"></i></button> 
-
-								@endif 
-
-								@if(in_array($product->id , Session::get('cart_id')) == 0 )
-							   		<button class="btn btn-large pull-right product-cart"> Add to cart <i class=" icon-shopping-cart"></i></button> 
-								@endif
-
-						   	@endif
-
-							@if(!Session::has('cart_id'))
-
-								   		<button class="btn btn-large pull-right product-cart"> Add to cart <i class=" icon-shopping-cart"></i></button>
-							@endif
-
-
-						@else
-							<a href="{{ url('/login') }}" class="btn btn-large pull-right product-except"> Add to cart <i class=" icon-shopping-cart"></i></a>
-							</a>
-
-						@endif -->
-
-				@if(Session::has('cart'))
+				@if(Session::has('cart') && $quantity > 0)
 					@if(array_key_exists($color_product->id , Session::get('cart')->items))
 						<a class="btn btn-large btn-primary pull-right product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}"> Remove From <i class=" icon-shopping-cart"></i></a>
-					@else
+					@elseif( $quantity > 0)
 						<a class="btn btn-large pull-right product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}"> Add to cart <i class=" icon-shopping-cart"></i></a>
 					@endif
 
-				@else
+				@elseif( $quantity > 0)
 					<a class="btn btn-large pull-right product-cart" href="{{route('product.addToCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}"> Add to cart <i class=" icon-shopping-cart"></i></a>
 				@endif
 					</div>
@@ -118,11 +81,18 @@
 				  </div>
 				
 				
-				<hr class="soft"/>
+					<hr class="soft"/>
 
 
-				<h4>{{$color_product->quantity}} items in stock</h4>
-			
+				@if( $quantity > 10)
+					<h4>{{$color_product->quantity}} items in stock</h4>
+				@elseif($quantity <= 10 && $quantity > 0)
+					<h4 style="color:#b94a48">only {{$color_product->quantity}} items in stock</h4>
+				@elseif($quantity == 0)
+					<h3 style="color:#b94a48">Out Of Stock</h3>
+				@endif
+
+
 				  <div style="margin-top:6px">
 					<h4>Color : {{ $color->name }}</h4>
 					@if(count($other_colors) > 0)
@@ -137,13 +107,21 @@
 					</h5>
 					@endif
 				  </div>
-			
-				<hr class="soft clr"/>
+			<hr class="soft"/>
 				
 				<a class="btn btn-small pull-right" href="#detail">More Details</a>
 				<br class="clr"/>
 			<a href="#" name="detail"></a>
-			<hr class="soft"/>
+
+			@if( $quantity == 0)
+				<hr class="soft clr" style="margin-top: 100px" />
+			@else
+				<hr class="soft clr" style="margin-top: 60px" />
+			@endif
+
+			
+
+
 			</div>
 			
 			<div class="span9">

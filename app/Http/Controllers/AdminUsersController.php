@@ -43,10 +43,10 @@ class AdminUsersController extends Controller
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
 
-        if($input['is_admin']){
-            $user->is_admin = 1;
-            $user->save();
-        }
+        // if($input['is_admin']){
+        //     $user->is_admin = 1;
+        //     $user->save();
+        // }
 
         if($user){
             Session::flash('createUser' , 'The User has been Created Successfully');
@@ -102,13 +102,13 @@ class AdminUsersController extends Controller
 
 
         //bug
-        if($input['is_admin']== '1'){
-            $user->is_admin = 1;
-            $user->save();
-        }else{
-            $user->is_admin = 0;
-            $user->save();
-        }
+        // if($input['is_admin']== '1'){
+        //     $user->is_admin = 1;
+        //     $user->save();
+        // }else{
+        //     $user->is_admin = 0;
+        //     $user->save();
+        // }
 
         if($user){
             Session::flash('editUser' , 'The User Has been updated');
@@ -147,6 +147,8 @@ class AdminUsersController extends Controller
         return view('admin.users.index' , compact('users'));
     }
 
+
+    
 
     
 }

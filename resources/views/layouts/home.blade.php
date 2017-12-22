@@ -22,6 +22,8 @@
 <!-- Bootstrap style responsive -->	
 	<link href="{{ asset('themes/css/bootstrap-responsive.min.css') }}" rel="stylesheet"/>
 	<link href="{{ asset('themes/css/font-awesome.css') }}" rel="stylesheet" type="text/css">
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
 <!-- Google-code-prettify -->	
 	<link href="{{ asset('themes/js/google-code-prettify/prettify.css') }}" rel="stylesheet"/>
 <!-- fav and touch icons -->
@@ -45,6 +47,19 @@
 	<style type="text/css" id="enject"></style>
 
 	<link href="{{ asset('css/styles.css') }}" rel="stylesheet"/>
+
+	<style type="text/css">
+		.navbar .nav > li > a{
+			padding : 10px 7px;
+		}
+
+		
+		.navbar .nav>li>a:focus, 
+		.navbar .nav>li>a:hover
+		{
+			color:#FFF;
+		}
+	</style>
 
     @yield('styles')
 
@@ -87,8 +102,8 @@
 		</select> 
 		  <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
     </form>
-    <ul id="topMenu" class="nav pull-left" style="margin-left:50px">
-	 <li class=""><a href="{{url('/Eco-home/special-offers')}}">Special Offers</a></li>
+    <ul id="topMenu" class="nav pull-left" style="margin-left:120px;margin-bottom:0px">
+	 <!-- <li class=""><a href="{{url('/Eco-home/special-offers')}}">Special Offers</a></li> -->
 	 <!-- <li class=""><a href="normal.html">Delivery</a></li> -->
 	 <!-- <li class=""><a href="contact.html">Contact</a></li> -->
 @if(Auth::check())
@@ -105,11 +120,15 @@
 	 </li>
 @endif
 
-	 <li>
-	 @if(!Auth::check())
-	 <a href="{!! url('Eco-home/login') !!}"  style="padding-left:30px"><span class="btn btn-success">Sign-in</span></a>
-	  @endif
-	  </li>
+	@if(!Auth::check())
+		 <li>
+		 <a href="{!! url('Eco-home/login') !!}"  style=""><span class="btn btn-success">Sign-in</span></a>
+		 </li>
+		 <li>
+		 <a href="{!! url('Eco-home/login') !!}"  style=""><span class="btn btn-default">Register</span></a>
+		 </li>
+	@endif
+
 	  <!-- role="button" data-toggle="modal" -->
 	<!--  <a href="product_summary.html"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ 3 ] Itemes in your cart </span> </a>  -->
 
@@ -117,19 +136,20 @@
 
 	 @if(Auth::check())
 
-	 	<ul class="nav navbar-top-links navbar-right" style="margin-left:20px; ">
+	 	<ul class="nav navbar-top-links navbar-right" style="float:left;margin-top: 18px ">
 	 		
 	 		<li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        {{Auth::user()->firstname}}<i class="fa fa-caret-down"></i>
+                    <a class="user-profile" data-toggle="dropdown" href="#" style="line-height: 0px;color:#fff;">
+                        {{Auth::user()->firstname}} <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        <li><a href="{{ route('user.address' , Auth::user()->id) }}" style="line-height: 40px"><i class="fa fa-user fa-fw"></i> User Profile</a>
                         </li>
                         <!-- <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li> -->
                         <li class="divider"></li>
-                        <li><a href="{{ url('/logout') }}"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        <li>
+                        	<a href="{{ route('logout') }}" style="line-height: 40px"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
                         </li>
                     </ul>
                     <!-- /.dropdown-user -->
@@ -145,9 +165,16 @@
 <!-- Header End====================================================================== -->
 
 
+
+
 <div id="mainBody">
 	<div class="container" style="margin-top:20px;">
+
+	
+
+
 	<div class="row">
+	
 <!-- Sidebar ================================================== -->
 	<div id="sidebar" class="span3">
 	@if(Auth::check())
@@ -171,7 +198,9 @@
 					<li class="subMenu open"><a>{{ $cat->name }}</a>
 						<ul>
 							@foreach($cat->subcategories as $sub)
-								<li><a class="active" href="{!! url('Eco-home/sub-category' , $sub->id) !!}"><i class="icon-chevron-right"></i>{{$sub->name}}</a></li>
+								<li><a class="active"  href="{!! url('Eco-home/sub-category' , $sub->id) !!}"><i class="icon-chevron-right"></i>{{$sub->name . "  (" . $sub->products->count() . ")" }}</a>
+								
+								</li>
 							@endforeach
 						</ul>
 					</li>
@@ -208,6 +237,21 @@
 
 
 
+		@if(Auth::check() && Auth::user()->status==0)
+			<div class="span6 alert alert-block alert-error fade in" style="width:68%">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<strong>Your Email Not Activated,</strong> Activate Your Account to start Shopping .
+			</div>
+		@endif
+
+
+		@if(Session::has('email_activate'))
+			<div class="span6 alert alert-block alert-success fade in" style="width:68%">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<strong>{{Session::get('email_activate')}},</strong> Start Shopping Now .
+			</div>
+		@endif
+
 
 		@yield('content')
 
@@ -220,7 +264,7 @@
 	</div>
 </div>
 <!-- Footer ================================================================== -->
-	<div  id="footerSection">
+	<div  id="footerSection" style="margin-top: 200px">
 	<div class="container">
 		<div class="row">
 			<div class="span3">
@@ -247,14 +291,14 @@
 				<a href="#">MANUFACTURERS</a> 
 				<a href="#">SUPPLIERS</a> 
 			 </div>
-			<div id="socialMedia" class="span3 pull-right">
+			<!-- <div id="socialMedia" class="span3 pull-right">
 				<h5>SOCIAL MEDIA </h5>
 				<a href="#"><img width="60" height="60" src="{{ asset('themes/images/facebook.png')}}" title="facebook" alt="facebook"/></a>
 				<a href="#"><img width="60" height="60" src="{{ asset('themes/images/twitter.png')}}" title="twitter" alt="twitter"/></a>
 				<a href="#"><img width="60" height="60" src="{{ asset('themes/images/youtube.png')}}" title="youtube" alt="youtube"/></a>
-			 </di> 
+			 </div>  -->
 		 </div>
-		<p class="pull-right">&copy; Bootshop</p>
+		<p class="pull-right">&copy; Mahmoud Abd-Elfattah</p>
 	</div><!-- Container End -->
 	</div>
 	

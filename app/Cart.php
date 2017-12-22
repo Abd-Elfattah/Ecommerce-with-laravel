@@ -31,10 +31,10 @@ class Cart
     		$item['price'] = $product->offer_price;
     		$item['discount'] = $product->price - $product->offer_price;
     	}
-    	$item['color_product'] = $color_product;
     	$item['product_id'] = $product_id;
     	$item['color_id'] = $color_id;
     	$item['quantity'] = 1;
+        $item['color_product'] = $color_product;
 
 
     	// Items

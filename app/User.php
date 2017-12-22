@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'firstname', 'lastname' ,'email', 'password', 'is_admin'
+        'firstname', 'lastname' ,'email', 'password', 'is_admin' , 'verifyToken' , 'status'
     ];
 
     /**
@@ -26,6 +26,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+
+    public function addresses(){
+        return $this->hasMany('App\Address');
+    }
 
 
 
