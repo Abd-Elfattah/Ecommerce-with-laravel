@@ -1,5 +1,14 @@
 @extends('layouts.home')
 
+@section('styles')
+    <style type="text/css">
+        label{
+            margin-right: 30px;
+        }
+    </style>
+
+@stop
+
 @section('content')
 <div class="span9">
     <ul class="breadcrumb">
@@ -13,7 +22,7 @@
                         {{ csrf_field() }}
 
                         <div class="control-group{{ $errors->has('firstname') ? ' has-error' : '' }}">
-                            <label for="firstname" class="col-md-4 control-label">First Name :</label>
+                            <label for="firstname" class="col-md-4 control-label">First Name </label>
 
                             <div class="col-md-6">
                                 <input id="firstname" type="text" class="form-control" name="firstname" value="{{ old('firstname') }}">
@@ -28,7 +37,7 @@
 
 
                         <div class="control-group{{ $errors->has('lastname') ? ' has-error' : '' }}">
-                            <label for="lastname" class="col-md-4 control-label">Last Name :</label>
+                            <label for="lastname" class="col-md-4 control-label">Last Name </label>
 
                             <div class="col-md-6">
                                 <input id="lastname" type="text" class="form-control" name="lastname" value="{{ old('lastname') }}">
@@ -42,7 +51,7 @@
                         </div>
 
                         <div class="control-group{{ $errors->has('email') ? ' has-error' : '' }}">
-                            <label for="email" class="col-md-4 control-label">E-Mail Address :</label>
+                            <label for="email" class="col-md-4 control-label">E-Mail Address </label>
 
                             <div class="col-md-6">
                                 <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" >
@@ -56,7 +65,7 @@
                         </div>
 
                         <div class="control-group{{ $errors->has('password') ? ' has-error' : '' }}">
-                            <label for="password" class="col-md-4 control-label">Password :</label>
+                            <label for="password" class="col-md-4 control-label">Password </label>
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control" name="password" >
@@ -70,7 +79,7 @@
                         </div>
 
                         <div class="control-group">
-                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password :</label>
+                            <label for="password-confirm" class="col-md-4 control-label">Confirm Password </label>
 
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" >
@@ -80,7 +89,7 @@
                         <div class="control-group">
                             <div class="controls">
                                 
-                                <input class="btn btn-success" type="submit" value="Register" />
+                                <input class="btn btn-success" type="submit" value="Register" style="margin-left:50px ;margin-top: 10px" />
                             </div>
                         </div>
                     </form>

@@ -34,6 +34,15 @@ class User extends Authenticatable
     }
 
 
+    public function payments(){
+        return $this->hasMany('App\Payment');
+    }
+
+    public function orders(){
+        return $this->hasManyThrough('App\Order' , 'App\Payment');
+    }
+
+
 
 
     // Admin Middleware

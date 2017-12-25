@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\Payment;
 class ProfileController extends Controller
 {
     
@@ -27,7 +28,7 @@ class ProfileController extends Controller
     		'city' => 'required',
     		'area' => 'required', 
     		'location_type' => 'required', 
-    		'mobile' => 'required|min:11|max:11' 
+    		'mobile' => 'required|min:11|max:11|unique:addresses' 
     	]);
 
     	$user = User::findOrFail($id);
@@ -35,5 +36,11 @@ class ProfileController extends Controller
     	$address = $user->addresses()->create($input);
 
     	return redirect()->route('user.address' , $id);
+    }
+
+    public function showOrders($id){
+        $user = User::findOrFail($id);
+        $payments = Payment::where('user_id' , $user->id)->paginate(2);
+        return view('front.orders' , compact('user','payments'));
     }
 }

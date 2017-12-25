@@ -9,6 +9,9 @@
 			margin-left:110px;
 			height: 55px;
 		}
+		.discount{
+			opacity:0.9;
+		}
 	</style>
 
 @stop
@@ -23,25 +26,33 @@
 		
     </ul>
 	<h3>{{$sub->name}} Products<small class="pull-right" style="margin-top:10px">
-	@if(!empty($products))
-		{{$sub->products->count()}}	
+	@if($count > 0)
+		{{$count}}	
 	@else {{"No"}}
 
 	@endif
 	products are available </small></h3>	
 	<hr class="soft"/>
 	
-	<form class="form-horizontal span6">
+	<form class="form-horizontal span9">
 		<div class="control-group">
 		  <label class="control-label alignL">Sort By </label>
-			<select>
-              <option>Priduct name A - Z</option>
-              <option>Priduct name Z - A</option>
-              <option>Priduct Stoke</option>
-              <option>Price Lowest first</option>
+			<select id="sortBy" onchange="location = this.value;">
+              <option selected disabled>Select</option>
+              <option value="{{ route('sortBy.priceLowestFirst' , $sub->id) }}">Price Lowest first</option>
+              <option value="{{ route('sortBy.priceHighestFirst' , $sub->id) }}">Price Highest first</option>
+              <option value="{{ route('sortBy.discount' , $sub->id) }}">Discount Only</option>
+              <option value="brands">Brand</option>
+            </select>
+
+            <select id="brands" onchange="location = this.value;" style="display:none">
+              <option selected disabled>Select Brand</option>
+	              @foreach( $sub->brands as $brand )
+	              	<option value="{{ route('sortBy.brand' , ['sub_id'=>$sub->id , 'brand_id'=>$brand->id]) }}">{{ $brand->name }}</option>
+	              @endforeach
             </select>
 		</div>
-	  </form>
+	</form>
 
 	  
 
@@ -49,36 +60,7 @@
 
 <br class="clr"/>
 <div class="tab-content">
-	<!-- <div class="tab-pane" id="listView">
-		<div class="row">	  
-			<div class="span2">
-				<img src="{{ asset('themes/images/products/3.jpg') }}" alt=""/>
-			</div>
-			<div class="span4">
-				<h4>Product Name </h4>					
-				<hr class="soft"/>
-				
-				<p>
-				Nowadays the lingerie industry is one of the most successful business spheres.We always stay in touch with the latest fashion tendencies - 
-				that is why our goods are so popular..
-				</p>
-				<a class="btn btn-small pull-right" href="product_details.html">View Details</a>
-				<br class="clr"/>
-			</div>
-			<div class="span3 alignR">
-			<form class="form-horizontal qtyFrm">
-			<h3> $140.00</h3>
-			
-			  <a href="product_details.html" class="btn btn-large "> Add to <i class=" icon-shopping-cart"></i></a>
-			  
-			
-				</form>
-			</div>
-		</div>
-		<hr class="soft"/>
-		
-	</div> -->
-
+	
 	<div class="tab-pane  active" id="blockView">
 		<ul class="thumbnails">
 
@@ -107,7 +89,7 @@
 									
 							
 							@if($color_product=$color->pivot)
-								@if(Session::has('cart'))
+								@if( Session::has('cart') && Session::get('cart')->totQty > 0 )
 									@if(array_key_exists($color_product->id , Session::get('cart')->items))
 									
 										<a style="font-weight:bold"  class="btn btn-danger product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}">Remove <i class="icon-shopping-cart"></i>
@@ -149,7 +131,7 @@
 					   		 <h4 style="text-align:center"><input type="hidden" class="product-id" value="{{ $product->id }}" >
 						
 							@if($color_product=$color->pivot)
-								@if(Session::has('cart'))
+								@if(Session::has('cart') && Session::get('cart')->totQty > 0 )
 									@if(array_key_exists($color_product->id , Session::get('cart')->items))
 									
 										<a style="font-weight:bold"  class="btn btn-danger product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}">Remove <i class="icon-shopping-cart"></i>
@@ -196,14 +178,10 @@
 </div>
 
 	
-	<div class="pagination" style="text-align:center">
-			@if($products)
-				{{ $products->render() }}
-			@endif
-	</div>
+	
 
 			
-			<br class="clr"/>
+<br class="clr"/>
 </div>
 
 @stop
@@ -218,59 +196,19 @@
 	
 				
 
-			// 	$(document).ready(function(){
+				$(document).ready(function(){
 				
-			// 		$('.product-cart').click(function(){
-
-			// 			var product_id = $(this).parent().find('.product-id').val();
-
-			// 			if($(this).hasClass('btn-danger')){
-			// 				$.ajax({
-			// 					type:'get',
-			// 					url:'{!!URL::to('removeFromCartAjax')!!}',
-			// 					data:{'id':product_id},
-			// 					success:function(cart_count){
-								
-			// 						$('.new-cart-update').text(cart_count);
-									
-
-
-			// 					},
-			// 					error:function(){
-									
-			// 					}
-			// 				})
-
-			// 				$(this).removeClass('btn-danger').html('Add To <i class="icon-shopping-cart"></i>');
-
-
-
-
-
-			// 			// Add Session Product to Cart
-			// 			}else{
-			// 				$.ajax({
-			// 					type:'get',
-			// 					url:'{!!URL::to('addToCartAjax')!!}',
-			// 					data:{'id':product_id},
-			// 					success:function(cart_count){
-			// 						$('.new-cart-update').text(cart_count);
-
-			// 					},
-			// 					error:function(){
-
-			// 					}
-			// 				})
-
-
-			// 				$(this).addClass('btn-danger').html('Remove <i class="icon-shopping-cart"></i>');
+					$('#sortBy').on('change' , function(){
+						if( $(this).val() == 'brands'){
 							
-			// 			}
+							$('#brands').show();
+							window.stop();
+						}
+					});					
 
-						
-			// 		});
-			// });
+				});
 
+			
 
 		</script>
 

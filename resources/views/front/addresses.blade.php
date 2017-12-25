@@ -1,4 +1,4 @@
-@extends('layouts.home')
+@extends('layouts.profile')
 
 
 @section('styles')
@@ -117,7 +117,7 @@
 
 @section('content')
 
-	<div class="span9">
+	<div class="span11" style="margin-left: 75px;">
 	    <ul class="breadcrumb">
 			<li><a href="{{asset('Eco-home')}}">Home</a> <span class="divider">/</span></li>
 			<li class="active"> {{$user->firstname . " " .$user->lastname}} <!-- <span class="divider">/</span> --></li>
@@ -127,7 +127,7 @@
 			
 
 
-		<div class="profile-sidebar span2" style="margin-left:2px; width:230px">				
+		<div class="profile-sidebar span3" style="margin-left:2px; width:240px">				
 			
 			<div class="profile-usermenu">
 				<ul class="nav">
@@ -146,7 +146,7 @@
 					</a>
 					</li>
 					<li>
-						<a href="#">
+						<a href="{{route('user.orders' , Auth::user()->id)}}">
 						<i class="fa fa-shopping-cart" style="margin-left:5px ;font-size: 26px;margin-top: 5px"></i>
 						<span style="margin-left:7px">My Orders</span> 
 					</a>
@@ -156,28 +156,38 @@
 				</ul>
 			</div>
 		</div>
-		<div class="span6" style="width:608px">
+
+
+		<div class="span7" style="width:798px">
 			<h3 style="margin:0;float:left">Shipping Addresses</h3>	
 			<a href="{{ route('user.create.address' , $user->id) }}" class="btn" style="font-weight: bold;float:right;margin-top:5px">Create Address</a>			
 		</div>
-		<div class="span6" style="background-color:#fafafa ;color:#5a647c;margin-top:20px;">
-			<div class="addresses" style="margin-left: 30px;margin-top:20px;padding-bottom: 30px">
-				@foreach( $user->addresses as $address )
-					@if($address == $user->addresses()->first())
-						<h4 style="margin: 0; margin-bottom: -10px">Address 1 (Primary)</h4> <br>
-						<span style="font-size: 14px">{{ $address->city . ", " . $address->area . " ." }}</span> <br>
-						<span style="font-size: 14px;font-weight: bold">{{ $address->mobile }}</span>
-						<span> verified or not</span>
-					@endif
-					@if($user->addresses()->count() > 1 && $address != $user->addresses()->first())
-						<hr class="soft" style="width:50%" />
-						<h4 style="margin: 0; margin-bottom: -10px">Address</h4> <br>
-						<span style="font-size: 14px">{{ $address->city . ", " . $address->area . " ." }}</span> <br>
-						<span style="font-size: 14px;font-weight: bold">{{ $address->mobile }}</span>
-						<span> verified or not</span>
 
-					@endif
-				@endforeach
+
+		<div class="span7" style="background-color:#fafafa ;color:#5a647c;margin-top:20px;">
+			<div class="addresses" style="margin-left: 30px;margin-top:20px;padding-bottom: 30px">
+				@if( $user->addresses->count() > 0 )
+					<?php $i=1; ?>
+					@foreach( $user->addresses as $address )
+						@if($address == $user->addresses()->first())
+							<p style="margin: 0; margin-bottom: -10px;font-size: 18px;font-weight:bold">Address <?php echo $i; ?> (Primary)</p> <br>
+							<span style="font-size: 15px">{{ $address->city . ", " . $address->area . " ." }}</span> <br>
+							<span style="font-size: 14px;font-weight: bold">{{ $address->mobile }}</span>
+							<span> verified or not</span>
+						@endif
+						@if($user->addresses()->count() > 1 && $address != $user->addresses()->first())
+							<hr class="soft" style="width:50%" />
+							<h4 style="margin: 0; margin-bottom: -10px">Address <?php echo $i; ?></h4> <br>
+							<span style="font-size: 15px">{{ $address->city . ", " . $address->area . " ." }}</span> <br>
+							<span style="font-size: 14px;font-weight: bold">{{ $address->mobile }}</span>
+							<span> verified or not</span>
+
+						@endif
+						<?php $i++; ?>
+					@endforeach
+				@else 
+					<p style="font-size: 23px">You haven't any address</p>
+				@endif
 			</div>
 		</div>
 

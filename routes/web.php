@@ -21,7 +21,40 @@ use Illuminate\Support\Facades\Session;
 
 Route::get('/test' , function(){
 	
-	return $cart = Session::get('cart')->totQty;	
+	//  // $cart = Session::get('cart');
+	//  // return $cart->totPrice;	
+	// Session::flush('cart');
+
+	// $products = Subcategory::find(1)->products;
+	// return $products->where('subcategory_id' , 1);
+
+	// $array = ['1'=>13 , '2'=>67 , '3'=>50];
+	// asort( $array );
+	// foreach ($array as $value) {
+	// 	echo $value . "   ";
+	// }
+	$sub = Subcategory::findOrFail(1);
+        $list = [];
+        foreach ($sub->products as $product) {
+            if( $product->offer_price == 0 ){
+                $price = $product->price;
+            }else{
+                $price = $product->offer_price;
+            }
+
+            $list[$product->id] = $price;
+        }
+
+
+        asort($list);
+
+        $products = [];
+        foreach ($list as $key => $value) {
+            $product = Product::findOrFail($key);
+            $products[] = $product;
+        }
+
+        return $products;
 
 });
 
@@ -112,12 +145,18 @@ Route::group(['middleware'=> ['admin']] , function(){
 
 // Front-End Controller
 Route::get('Eco-home' , 'FrontController@home')->name('homePage');
-Route::get('Eco-home/sub-category/{id}' , 'FrontController@subProducts');
+Route::get('Eco-home/sub-category/{id}' , 'FrontController@subProducts')->name('sub-category.show');
 Route::get('Eco-home/product/{id}','FrontController@displyProduct')->name('Eco-home.product');
-// Route::get('addToCartAjax' , 'FrontController@addToCartAjax');
-// Route::get('removeFromCartAjax' , 'FrontController@removeFromCartAjax');
+
 Route::get('Eco-home/special-offers', 'FrontController@offers');
 Route::get('Eco-home/product/{product_id}/color/{color_id}' , 'FrontController@productColor')->name('product.color');
+
+// Sort By
+Route::get('/Eco-home/sub-category/{sub_id}/sortBy/discountOnly' , 'FrontController@sortByDiscount')->name('sortBy.discount');
+Route::get('/Eco-home/sub-category/{sub_id}/sortBy/brand/{brand_id}' , 'FrontController@sortByBrand')->name('sortBy.brand');
+Route::get('/Eco-home/sub-category/{sub_id}/sortBy/Price_lowest_first' , 'FrontController@sortByPriceLowest')->name('sortBy.priceLowestFirst');
+Route::get('/Eco-home/sub-category/{sub_id}/sortBy/Price_highest_first' , 'FrontController@sortByPriceHighest')->name('sortBy.priceHighestFirst');
+
 
 
 
@@ -126,6 +165,7 @@ Route::get('Eco-home/cart' , 'CartController@show')->name('cart.show');
 Route::get('Eco-home/product/{product_id}/color/{color_id}/addToCart' , 'CartController@addToCart')->name('product.addToCart');
 Route::get('Eco-home/product/{product_id}/color/{color_id}/removeFromCart' , 'CartController@removeFromCart')->name('product.removeFromCart');
 Route::get('Eco-home/product/{product_id}/color/{color_id}/changeQuantity/{count}' , 'CartController@changeQuantity')->name('product.changeQuantity');
+Route::post('Eco-home/cart/checkout' , 'CartController@checkOut');
 
 // Email Verification
 Route::get('verifyEmail/{email}/{verifyToken}' , 'FrontController@sendEmailDone')->name('sendEmailDone');
@@ -136,13 +176,15 @@ Route::get('verifyEmail/{email}/{verifyToken}' , 'FrontController@sendEmailDone'
 Route::get('Eco-home/user/{user_id}/addresses' , 'ProfileController@userAddress')->name('user.address');
 Route::get('Eco-home/user/{user_id}/createAddresses' , 'ProfileController@createAddress')->name('user.create.address');
 Route::post('user/{user_id}/storeAddress' , 'ProfileController@storeAddress');
+Route::get('Eco-home/user/{id}/orders' , 'ProfileController@showOrders')->name('user.orders');
+
 
 
 
 // Users LogOut 
 Route::get('/Eco-home/logout' , function(){
 	Auth::logout();
-	return redirect()->back();
+	return redirect()->route('homePage');
 })->name('logout')->middleware('auth');
 
 

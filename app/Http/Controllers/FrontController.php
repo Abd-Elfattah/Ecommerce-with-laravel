@@ -24,7 +24,8 @@ class FrontController extends Controller
     public function subProducts($sub_id){
     	$sub = Subcategory::findOrFail($sub_id);
     	$products = $sub->products()->paginate(9);
-    	return view('front.sub-category', compact('sub','products'));
+        $count = Product::countIfOutOfStock($sub->products);
+    	return view('front.sub-category', compact('sub','products','count'));
     }
 
     
@@ -78,10 +79,81 @@ class FrontController extends Controller
     }
 
 
+
+
+    //  -------  Sort By -----------
+
+    public function sortByDiscount($sub_id){
+        $sub = Subcategory::findOrFail($sub_id);
+        $products = $sub->products()->where('offer_price', '!=' , 0)->paginate(9);
+        $count = Product::countIfOutOfStock($products);
+        return view('front.sub-category', compact('sub','products','count'));
+
+    }
+
+    public function sortByBrand($sub_id,$brand_id){
+        $sub = Subcategory::findOrFail($sub_id);
+        $products = $sub->products()->where('brand_id', $brand_id)->paginate(9);
+        $count = Product::countIfOutOfStock($products);
+        return view('front.sub-category', compact('sub','products','count'));
+
+    }
+
+    public function sortByPriceLowest($sub_id){
+        $sub = Subcategory::findOrFail($sub_id);
+        $list = [];
+        foreach ($sub->products as $product) {
+            if( $product->offer_price == 0 ){
+                $price = $product->price;
+            }else{
+                $price = $product->offer_price;
+            }
+
+            $list[$product->id] = $price;
+        }
+
+
+        asort($list);
+
+        $products = [];
+        foreach ($list as $key => $value) {
+            $product = Product::findOrFail($key);
+            $products[] = $product;
+        }
+        $count = count( $products );
+
+        return view('front.sub-category', compact('sub','products','count'));
+    }
+
+
+
+    public function sortByPriceHighest($sub_id){
+        $sub = Subcategory::findOrFail($sub_id);
+        $list = [];
+        foreach ($sub->products as $product) {
+            if( $product->offer_price == 0 ){
+                $price = $product->price;
+            }else{
+                $price = $product->offer_price;
+            }
+
+            $list[$product->id] = $price;
+        }
+
+
+        arsort($list);
+
+        $products = [];
+        foreach ($list as $key => $value) {
+            $product = Product::findOrFail($key);
+            $products[] = $product;
+        }
+        $count = count( $products );
+
+        return view('front.sub-category', compact('sub','products','count'));
+    }
+    //  -------  End --- Sort By -----------
+
+
     
-
-
-
-
-
 }

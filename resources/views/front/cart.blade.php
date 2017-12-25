@@ -75,13 +75,12 @@
                   	</select>
 
 
-	                  	@if( $quantity < 5)
-	                  		<p style="color:#b94a48">only {{$quantity}} Remind</p>
-	                  	@endif
+                  	@if( $quantity <= 5)
+                  		<p style="color:#b94a48">only {{$quantity}} Remind</p>
+                  	@endif
 
 	                @elseif( $quantity == 0 )
 	                	<p style="color:#b94a48;margin-top: 18px;margin-left: 10px">Out of Stock</p>
-	                
 	                @endif	
 
                   </td>
@@ -160,10 +159,16 @@
 	</table>
 	
             
+		
 			
 			
-	<!-- <a href="products.html" class="btn btn-large"><i class="icon-arrow-left"></i> Continue Shopping </a> -->
-		<a href="login.html" class="btn btn-large pull-right">Checkout <i class="icon-arrow-right"></i></a>
+		{!! Form::open(['method'=>'POST' , 'action'=>'CartController@checkOut']) !!}
+			
+			<div class="form-group">
+				<button type="submit" class="btn btn-large btn-success pull-right">Checkout <i class="icon-arrow-right"></i></button>
+
+			</div>
+		{!! Form::close() !!}
 	@else 
 		<h2>Cart is Empty</h2>
 	@endif	
@@ -181,13 +186,3 @@
 
 @stop
 
-
-@section('scripts')
-
-<script type="text/javascript">
-	function link(x){
-		window.location = x;
-	}
-</script>
-
-@stop

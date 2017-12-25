@@ -1,4 +1,4 @@
-@extends('layouts.home')
+@extends('layouts.profile')
 
 
 @section('styles')
@@ -117,16 +117,17 @@
 
 @section('content')
 
-	<div class="span9">
+	<div class="span11" style="margin-left: 75px;">
 	    <ul class="breadcrumb">
 			<li><a href="{{asset('Eco-home')}}">Home</a> <span class="divider">/</span></li>
-			<li class="active"> User Profile <!-- <span class="divider">/</span> --></li>
+			<li class="active"> {{$user->firstname . " " .$user->lastname}} <!-- <span class="divider">/</span> --></li>
 	    </ul>
+		<hr class="soft"/>
     
 			
 
 
-		<div class="profile-sidebar span2" style="margin-left:2px; width:230px">				
+		<div class="profile-sidebar span3" style="margin-left:2px; width:240px">				
 			
 			<div class="profile-usermenu">
 				<ul class="nav">
@@ -145,7 +146,7 @@
 					</a>
 					</li>
 					<li>
-						<a href="#">
+						<a href="{{route('user.orders' , Auth::user()->id)}}">
 						<i class="fa fa-shopping-cart" style="margin-left:5px ;font-size: 26px;margin-top: 5px"></i>
 						<span style="margin-left:7px">My Orders</span> 
 					</a>
@@ -155,12 +156,14 @@
 				</ul>
 			</div>
 		</div>
-		<div class="span6" style="width:608px">
+
+
+		<div class="span7" style="width:798px">
 			<h3 style="margin:0;float:left">Create Address</h3>	
 						
 		</div>
-		<div class="span6" style="background-color:#fafafa ;color:#5a647c;margin-top:20px;width:608px">
-			<div style="margin-top:20px;margin-left: 30px">
+		<div class="span7" style="background-color:#fafafa ;color:#5a647c;margin-top:20px;width:640px;">
+			<div style="margin-top:20px;margin-left: 150px">
 				<h5 style="margin-bottom: 10px">Country : Egypt</h5>
 				
 				 {!! Form::open(['method'=>'POST' , 'action'=>['ProfileController@storeAddress' , $user->id] , 'style'=>'margin-bottom:30px']) !!}
@@ -170,7 +173,7 @@
 						<label for="city" style="margin-right: 20px">City </label>
 						<input type="text" name="city" id="city" style="width:260px">
 						@if ($errors->has('city'))
-                            <span class="help-block alert-danger">
+                            <span class="help-block" style="color:#b94a48">
                                 <strong>{{ $errors->first('city') }}</strong>
                             </span>
                         @endif
@@ -179,7 +182,7 @@
 						<label for="area" style="margin-right: 20px">Area </label>
 						<input type="text" name="area" id="area" style="width:260px">
 						@if ($errors->has('area'))
-                            <span class="help-block alert-danger">
+                            <span class="help-block" style="color:#b94a48">
                                 <strong>{{ $errors->first('area') }}</strong>
                             </span>
                         @endif
@@ -192,7 +195,7 @@
 							<option value="Business">Business</option>
 						</select>
 						@if ($errors->has('location_type'))
-                            <span class="help-block alert-danger">
+                            <span class="help-block" style="color:#b94a48">
                                 <strong>{{ $errors->first('location_type') }}</strong>
                             </span>
                         @endif	
@@ -202,7 +205,7 @@
 						<label for="mobile" style="margin-right: 20px">Mobile </label>
 						<input type="text" name="mobile" id="mobile" class="form-control">
 						@if ($errors->has('mobile'))
-                            <span class="help-block alert-danger">
+                            <span class="help-block" style="color:#b94a48">
                                 <strong>{{ $errors->first('mobile') }}</strong>
                             </span>
                         @endif

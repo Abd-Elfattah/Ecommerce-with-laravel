@@ -3,7 +3,8 @@
 	  <link rel="stylesheet" href="https://cdn.jsdelivr.net/bxslider/4.2.12/jquery.bxslider.css">
 	<style type="text/css">
 		.discount{
-			padding: 4px 14px;
+			padding: 10px 14px;
+			opacity:0.95;
 		}
 
 		.product-cart, .product-except{
@@ -38,7 +39,7 @@
 			<div class="span5">
 				<h3>{{$product->name . " - " . $color->name . " color"}} 
 				@if( ($quantity = $color_product->quantity) >0 && !$product->offer_price == 0)
-				<span class="discount pull-right">
+				<span class="discount">
 					{{ floor(100 - ($product->offer_price/$product->price)*100 ) }}% off
 				</span>
 				@endif
@@ -64,7 +65,7 @@
 						<input type="hidden" class="color-id" value="{{ $color->id }}">
 
 
-				@if(Session::has('cart') && $quantity > 0)
+				@if(Session::has('cart') &&  Session::get('cart')->totQty > 0 && $quantity > 0 )
 					@if(array_key_exists($color_product->id , Session::get('cart')->items))
 						<a class="btn btn-large btn-primary pull-right product-cart" href="{{route('product.removeFromCart' ,['product_id'=>$product->id ,'color_id'=>$color->id])}}"> Remove From <i class=" icon-shopping-cart"></i></a>
 					@elseif( $quantity > 0)

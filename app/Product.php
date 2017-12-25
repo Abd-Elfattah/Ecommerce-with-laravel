@@ -42,14 +42,21 @@ class Product extends Model
     }
 
 
-    // public function getOfferPriceAttribute($value){
-    //     return number_format($value,2);
-    // }
+    // Count Products
+    public static function countIfOutOfStock($products){
+        $count = 0;
+        foreach( $products as $product ){
+            foreach ($product->colors as $color ) {
+                $color_product = $product->colors()->where('color_id',$color->id)->first()->pivot;
+                if( $color_product->quantity > 0 ){
+                    $count++;
+                    break;
+                }
+            }
+        }
 
-
-    // public function getPriceAttribute($value){
-    //     return number_format($value,2);
-    // }
+        return $count;
+    }
 
 
 }

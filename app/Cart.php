@@ -34,7 +34,7 @@ class Cart
     	$item['product_id'] = $product_id;
     	$item['color_id'] = $color_id;
     	$item['quantity'] = 1;
-        $item['color_product'] = $color_product;
+        // $item['color_product'] = $color_product;
 
 
     	// Items
@@ -56,15 +56,26 @@ class Cart
 
     public function addCount($product_id ,$color_id,$count){
     	$color_product	= Product::find($product_id)->colors()->where('color_id' , $color_id)->withPivot('id')->first()->pivot;
+        // if($this->items[$color_product->id]['quantity'] != 0){
+
+        // }
     	$this->totPrice	-= ($this->items[$color_product->id]['price']*$this->items[$color_product->id]['quantity']);
     	$this->totDisc 	-= ($this->items[$color_product->id]['discount']*$this->items[$color_product->id]['quantity']);
 
     	$this->items[$color_product->id]['quantity'] = $count;
     	$this->totPrice += ($this->items[$color_product->id]['price']*$count);
     	$this->totDisc 	+= ($this->items[$color_product->id]['discount']*$count);
-
-
     }
+
+    public function addOutOfCart($color_product)
+    {
+        $this->totPrice -= ($this->items[$color_product->id]['price']*$this->items[$color_product->id]['quantity']);
+        $this->totDisc  -= ($this->items[$color_product->id]['discount']*$this->items[$color_product->id]['quantity']);
+
+        $this->items[$color_product->id]['quantity'] = 0;
+    }
+
+
 
 
 }

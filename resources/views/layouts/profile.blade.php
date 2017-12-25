@@ -89,17 +89,19 @@
 	<span class="icon-bar"></span>
 </a>
   <div class="navbar-inner">
-    <a class="brand" href="{{ route('homePage')}}"><img src="{{asset('themes/images/logo.png')}}" alt="Bootsshop"/></a>
-
-    	<!-- Search -->
-		<form class="form-inline navbar-search" method="post" action="products.html" style="margin-left:100px">
-			<input id="srchFld" class="srchTxt" type="text" style="padding-left:30px;width: 300px" />
-		  
-		  	<button type="submit" id="submitButton" class="btn btn-primary">Search</button>
-    	</form>
-    	<!-- Search -->
-
-
+    <a class="brand" href="{!! url('Eco-home') !!}"><img src="{{asset('themes/images/logo.png')}}" alt="Bootsshop"/></a>
+		<form class="form-inline navbar-search" method="post" action="products.html" >
+		<input id="srchFld" class="srchTxt" type="text" style="padding-left:30px" />
+		  <select class="srchTxt">
+			<option>All</option>
+			<option>CLOTHES </option>
+			<option>FOOD AND BEVERAGES </option>
+			<option>HEALTH & BEAUTY </option>
+			<option>SPORTS & LEISURE </option>
+			<option>BOOKS & ENTERTAINMENTS </option>
+		</select> 
+		  <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
+    </form>
     <ul id="topMenu" class="nav pull-left" style="margin-left:120px;margin-bottom:0px">
 	 <!-- <li class=""><a href="{{url('/Eco-home/special-offers')}}">Special Offers</a></li> -->
 	 <!-- <li class=""><a href="normal.html">Delivery</a></li> -->
@@ -173,83 +175,6 @@
 
 	<div class="row">
 	
-<!-- Sidebar ================================================== -->
-	<div id="sidebar" class="span3">
-	@if(Auth::check())
-		<div class="well well-small"><a id="myCart" href="{{route('cart.show')}}"><img src="{{ asset('themes/images/ico-cart.png') }}" alt="cart">
-		<span class="new-cart-update">{{ Session::has('cart') ? count(Session::get('cart')->items) : "0"}}</span> Items in cart 
-	@else
-		<div class="well well-small"><a id="myCart" href="{{route('login')}}"><img src="{{ asset('themes/images/ico-cart.png') }}" alt="cart">
-		<span class="new-cart-update">0</span> Items in cart
-	@endif
-
-		
-		<span class="badge badge-warning pull-right">{{ Session::has('cart') ? Session::get('cart')->totPrice : "0" }} EGP</span>
-		
-		</a></div>
-		
-		<ul id="sideManu" class="nav nav-tabs nav-stacked" style="margin-bottom:30px">
-
-			@if($cats)
-
-				@foreach($cats as $cat)
-					@if( $cats->first() == $cat)
-						<li class="subMenu open"><a>{{ $cat->name }}</a>
-							<ul>
-								@foreach($cat->subcategories as $sub)
-									<li><a class="active"  href="{{ route('sub-category.show' , $sub->id) }}"><i class="icon-chevron-right"></i>{{$sub->name}}
-									{{ "(" . App\Product::countIfOutOfStock($sub->products) . ")" }}
-									</a> 
-									
-									</li>
-									
-								@endforeach
-							</ul>
-						</li>
-					@else
-
-						<li class="subMenu"><a> {{ $cat->name }} </a>
-							<ul style="display:none">
-								@foreach($cat->subcategories as $sub)
-									<li><a href="{{ route('sub-category.show' , $sub->id) }}"><i class="icon-chevron-right"></i>
-										{{$sub->name}}
-										{{ "(" . App\Product::countIfOutOfStock($sub->products) . ")" }}
-									</a></li>
-								@endforeach
-
-							</ul>
-						</li>
-
-					@endif
-				@endforeach
-
-			@endif
-			
-			
-		</ul>
-		<br/>
-		  <!-- <div class="thumbnail">
-			<img src="themes/images/products/panasonic.jpg" alt="Bootshop panasonoc New camera"/>
-			<div class="caption">
-			  <h5>Panasonic</h5>
-				<h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">$222.00</a></h4>
-			</div>
-		  </div><br/>
-			<div class="thumbnail">
-				<img src="themes/images/products/kindle.png" title="Bootshop New Kindel" alt="Bootshop Kindel">
-				<div class="caption">
-				  <h5>Kindle</h5>
-				    <h4 style="text-align:center"><a class="btn" href="product_details.html"> <i class="icon-zoom-in"></i></a> <a class="btn" href="#">Add to <i class="icon-shopping-cart"></i></a> <a class="btn btn-primary" href="#">$222.00</a></h4>
-				</div>
-			  </div><br/> -->
-			<div class="thumbnail">
-				<img src="{{asset('themes/images/payment_methods.png')}}" title="Bootshop Payment Methods" alt="Payments Methods">
-				<div class="caption">
-				  <h5>Payment Methods</h5>
-				</div>
-			  </div>
-	</div>
-<!-- Sidebar end=============================================== -->
 
 
 
@@ -270,23 +195,9 @@
 		@endif
 
 
-		@if(Session::has('cartFailed'))
-			<div class="span6 alert alert-block alert-error fade in" style="width:68%">
-				<button type="button" class="close" data-dismiss="alert">×</button>
-				<strong>{{Session::get('cartFailed')}}</strong>
-			</div>
-		@endif
-
-		@if(Session::has('cartSuccess'))
-			<div class="span6 alert alert-block alert-success fade in" style="width:68%">
-				<button type="button" class="close" data-dismiss="alert">×</button>
-				<strong>{{Session::get('cartSuccess')}}</strong>
-			</div>
-		@endif	
 
 
 		@yield('content')
-
 
 
 
@@ -296,7 +207,7 @@
 	</div>
 </div>
 <!-- Footer ================================================================== -->
-	<div  id="footerSection" style="margin-top: 200px">
+	<div  id="footerSection" style="margin-top: 230px">
 	<div class="container">
 		<div class="row">
 			<div class="span3">
