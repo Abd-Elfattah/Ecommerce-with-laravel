@@ -72,48 +72,49 @@
 			<tbody>
 
 
-				<tr class="techSpecRow"><td class="techSpecTD1">Brand :</td><td class="techSpecTD2">{{$product->brand->subcategory->category->name}}</td></tr>
+				<tr class="techSpecRow"><td class="techSpecTD1">Brand </td><td class="techSpecTD2">{{$product->brand->subcategory->category->name}}</td></tr>
 
-				<tr class="techSpecRow"><td class="techSpecTD1">Sub-Category :</td><td class="techSpecTD2">{{$product->brand->subcategory->name}}</td></tr>
+				<tr class="techSpecRow"><td class="techSpecTD1">Sub-Category </td><td class="techSpecTD2">{{$product->brand->subcategory->name}}</td></tr>
 
-				<tr class="techSpecRow"><td class="techSpecTD1">Brand :</td><td class="techSpecTD2">{{$product->brand->name}}</td></tr>
+				<tr class="techSpecRow"><td class="techSpecTD1">Brand </td><td class="techSpecTD2">{{$product->brand->name}}</td></tr>
 
-				<tr class="techSpecRow"><td class="techSpecTD1">Price(EGP) :</td><td class="techSpecTD2">{{$product->price}}</td></tr>
+				<tr class="techSpecRow"><td class="techSpecTD1">Price(EGP) </td><td class="techSpecTD2">{{$product->price}}</td></tr>
 
-				<tr class="techSpecRow"><td class="techSpecTD1">Offer price :</td><td class="techSpecTD2">
+				<tr class="techSpecRow"><td class="techSpecTD1">Offer price </td><td class="techSpecTD2">
 					{{ $product->offer_price == 0 ? "No Offer Price" : $product->offer_price}}
 				</td></tr>
 
-				<tr class="techSpecRow"><td class="techSpecTD1">Colors :</td><td class="techSpecTD2">
+				<tr class="techSpecRow"><td class="techSpecTD1">Colors </td><td class="techSpecTD2">
 			@foreach($product->colors as $color)
 				{{$color->name}} 
 			@endforeach
 				</td></tr>
 
-			@if($product->brand->subcategory->attr1 != null)
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr1}} :</td><td class="techSpecTD2">{{$product->val1}}</td></tr>
-			@endif
-
-			@if($product->brand->subcategory->attr2 != null)
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr2}} :</td><td class="techSpecTD2">{{$product->val2}}</td></tr>
-			@endif
-
-			@if($product->brand->subcategory->attr3 != null)
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr3}} :</td><td class="techSpecTD2">{{$product->val3}}</td></tr>
-			@endif
-
-
-			@if($product->brand->subcategory->attr4 != '')
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr4}} :</td><td class="techSpecTD2">{{$product->val4}}</td></tr>
-			@endif
-
-			@if($product->brand->subcategory->attr5 != '')
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr5}} :</td><td class="techSpecTD2">{{$product->val5}}</td></tr>
-			@endif
+			
 
 				
 			</tbody>
 			</table>
+
+
+			<h4>Product Details</h4>
+			<table class="table table-bordered">
+			<tbody>
+
+			@foreach($product->values as $value)
+				<tr class="techSpecRow"><td class="techSpecTD1">{{$value->option->name}} </td><td class="techSpecTD2">
+					{{ $value->name }}
+				</td></tr>
+			@endforeach
+
+
+			
+
+				
+			</tbody>
+			</table>
+
+
 			<div class="row"></div>
 			<h4 style="margin-top:40px">Product Description</h4>
 			<p>{{ $product->description }}</p>

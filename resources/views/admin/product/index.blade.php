@@ -63,7 +63,6 @@
                 @if($products)
                     @foreach($products as $product)
                       <tr>
-                        
                         <td>{{$product->id}}</td>
                         <td>{{$product->name}}</td>
                         <td>{{$product->brand->subcategory->category->name}}</td>

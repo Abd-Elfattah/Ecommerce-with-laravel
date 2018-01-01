@@ -9,9 +9,6 @@
                             Create Product
                             
                         </h1>
-                        
-
-
                     </div>
                 </div>
     <!-- /.row -->
@@ -64,18 +61,10 @@
                     {!! Form::text('price' , null , ['class'=>'form-control']) !!}
                 </div>
 
-                <div class="form-group" style="width:50%">
-                    {!! Form::label('offer_price','Offer Price : (not required)') !!}
-                    {!! Form::text('offer_price' , null , ['class'=>'form-control']) !!}
-                </div>
-
                 <div class="form-group">
                     {!! Form::label('description','Description') !!}
                     {!! Form::textarea('description' , null , ['class'=>'form-control', 'rows'=>5]) !!}
                 </div>
-
-                
-
                 
                 <div class="form-group">
                     {!! Form::submit('Continue' , ['class' => 'btn btn-primary']) !!}

@@ -59,6 +59,47 @@
 		{
 			color:#FFF;
 		}
+		.showResult{
+		
+		    position: absolute;
+		    /*display: inline-block;*/
+		    right: 71px;
+    		width: 269px;
+		    margin-top: -7px;
+		    z-index: 1;
+		    background-color: #fff;
+		    border-radius: 2px;
+			
+		}
+		.showResult li{
+			display: block;
+			background-color:#FFFFFF;
+			color: #2BBCDE;
+			padding-left: 17px; 
+			padding-bottom: 5px; 
+			padding-top: 5px; 
+			list-style: none;
+			cursor: pointer;	
+			border: 1px solid #ddd;	
+			margin: 2px;		
+			border-radius: 5px;
+			font-weight: bold;
+		}
+
+		.showResult li:hover{
+			background-color: #e0e0d1;
+		}
+
+		.searchPhoto{
+			width:40px;
+			height: 45px;
+			margin-right: 13px;
+		}
+		.see-all{
+				background:none;
+			  	border:none;
+			  	font-size:1em;
+		}
 	</style>
 
     @yield('styles')
@@ -90,18 +131,24 @@
 </a>
   <div class="navbar-inner">
     <a class="brand" href="{!! url('Eco-home') !!}"><img src="{{asset('themes/images/logo.png')}}" alt="Bootsshop"/></a>
-		<form class="form-inline navbar-search" method="post" action="products.html" >
-		<input id="srchFld" class="srchTxt" type="text" style="padding-left:30px" />
-		  <select class="srchTxt">
-			<option>All</option>
-			<option>CLOTHES </option>
-			<option>FOOD AND BEVERAGES </option>
-			<option>HEALTH & BEAUTY </option>
-			<option>SPORTS & LEISURE </option>
-			<option>BOOKS & ENTERTAINMENTS </option>
-		</select> 
-		  <button type="submit" id="submitButton" class="btn btn-primary">Go</button>
-    </form>
+		
+
+		<!-- Search -->
+		<div>
+		{!! Form::open(['method'=>'GET' , 'action'=>'FrontController@search' , 'class'=>'form-inline navbar-search' , 'style'=>'margin-left:100px']) !!}
+		{!! csrf_field() !!}
+			<input class="search" name="search" class="srchTxt" placeholder="Search ... " type="text" style="padding-left:10px;width: 250px" />
+			<ul class="showResult">
+				
+			</ul>
+		  
+		  	<button type="submit" id="submitButton" class="btn btn-primary">Search</button>
+		{!! Form::close() !!}
+		</div>
+		 <!-- {!! Form::text('search_text', null, array('placeholder' => 'Search Text','class' => 'form-control','id'=>'search_text')) !!} -->
+	<!-- Search -->
+
+
     <ul id="topMenu" class="nav pull-left" style="margin-left:120px;margin-bottom:0px">
 	 <!-- <li class=""><a href="{{url('/Eco-home/special-offers')}}">Special Offers</a></li> -->
 	 <!-- <li class=""><a href="normal.html">Delivery</a></li> -->
@@ -207,39 +254,25 @@
 	</div>
 </div>
 <!-- Footer ================================================================== -->
-	<div  id="footerSection" style="margin-top: 230px">
+	<div  id="footerSection" style="margin-top: 200px">
 	<div class="container">
 		<div class="row">
 			<div class="span3">
 				<h5>ACCOUNT</h5>
-				<a href="login.html">YOUR ACCOUNT</a>
-				<a href="login.html">PERSONAL INFORMATION</a> 
-				<a href="login.html">ADDRESSES</a> 
-				<a href="login.html">DISCOUNT</a>  
-				<a href="login.html">ORDER HISTORY</a>
-			 </div>
-			<div class="span3">
-				<h5>INFORMATION</h5>
-				<a href="contact.html">CONTACT</a>  
-				<a href="register.html">REGISTRATION</a>  
-				<a href="legal_notice.html">LEGAL NOTICE</a>  
-				<a href="tac.html">TERMS AND CONDITIONS</a> 
-				<a href="faq.html">FAQ</a>
+				@if(Auth::check())
+					<a href="{{route('user.address',Auth::user()->id)}}">ADDRESSES</a> 
+					<a href="{{route('user.orders',Auth::user()->id)}}">ORDER HISTORY</a>
+				@else
+					<a href="{{route('login')}}">ADDRESSES</a> 
+					<a href="{{route('login')}}">ORDER HISTORY</a>
+				@endif
 			 </div>
 			<div class="span3">
 				<h5>OUR OFFERS</h5>
 				<a href="#">NEW PRODUCTS</a> 
 				<a href="#">TOP SELLERS</a>  
-				<a href="special_offer.html">SPECIAL OFFERS</a>  
-				<a href="#">MANUFACTURERS</a> 
-				<a href="#">SUPPLIERS</a> 
+				<a href="{{ route('offers') }}">SPECIAL OFFERS</a>  
 			 </div>
-			<!-- <div id="socialMedia" class="span3 pull-right">
-				<h5>SOCIAL MEDIA </h5>
-				<a href="#"><img width="60" height="60" src="{{ asset('themes/images/facebook.png')}}" title="facebook" alt="facebook"/></a>
-				<a href="#"><img width="60" height="60" src="{{ asset('themes/images/twitter.png')}}" title="twitter" alt="twitter"/></a>
-				<a href="#"><img width="60" height="60" src="{{ asset('themes/images/youtube.png')}}" title="youtube" alt="youtube"/></a>
-			 </div>  -->
 		 </div>
 		<p class="pull-right">&copy; Mahmoud Abd-Elfattah</p>
 	</div><!-- Container End -->
@@ -258,6 +291,52 @@
 	<script src="{{ asset('themes/js/google-code-prettify/prettify.js') }}"></script>
 	<script src="{{ asset('themes/js/bootshop.js') }}"></script>
     <script src="{{ asset('themes/js/jquery.lightbox-0.5.js') }}"></script>
+
+    <script type="text/javascript">
+    	
+    	$(document).ready(function(){
+    		$('.search').keyup(function(){
+    				
+
+    			if( $('.search').val() != '' ){
+    				var search_word = $(this).val();
+    				var url = "{{ route('autoComplete') }}";
+    				var li_lists = "";
+
+    				$.ajax({
+    					url:url,
+    					method:"GET",
+    					data:{search_word:search_word},
+    					success:function(data){
+    						// console.log(data[1]);
+    						if(data[0] == 'success'){
+    							data = data[1];
+	    						for(var i=0; i <= 3 ;i++){
+	    							li_lists+='<a style="text-decoration:none" href="'+data[i]['link']+'"><li><img class="searchPhoto" src="'+data[i]['path']+'"><span>'+data[i]['name']+'</span></li></a>';
+	    							$('.showResult').html(" ").append(li_lists);
+	    						}
+
+	    						if(data.length > 3){
+	    							see_all='<li><input class="see-all" type="submit" value="See All Results"></li>';
+	    							$('.showResult').append(see_all);
+	    						}
+
+    						}else{
+    							li_lists+='<li>No Search Results</li>';
+    							$('.showResult').html(" ").append(li_lists);
+    						}
+    						
+    					}
+    				});
+
+
+    			}else{
+    				$('.showResult').empty();
+    			}
+    		});
+    	});
+ 		
+	</script>
 
 
     @yield('scripts')

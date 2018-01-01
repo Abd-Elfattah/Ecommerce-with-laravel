@@ -133,6 +133,7 @@
 	<span class="icon-bar"></span>
 	<span class="icon-bar"></span>
 </a>
+	
   <div class="navbar-inner">
     <a class="brand" href="{{ route('homePage')}}"><img src="{{asset('themes/images/logo.png')}}" alt="Bootsshop"/></a>
 

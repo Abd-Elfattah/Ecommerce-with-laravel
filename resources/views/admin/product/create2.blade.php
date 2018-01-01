@@ -19,7 +19,7 @@
 
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3">
-            {!! Form::open(['method'=>'POST' , 'action'=>['ProductController@secondStore',$product->id]]) !!}
+            {!! Form::open(['method'=>'POST' , 'action'=>['ProductController@secondStore',$product->id,$sub->id]]) !!}
 
                 <div class="form-group" style="width:60%">
                     {!! Form::label('color_id','Color :') !!}
@@ -32,41 +32,16 @@
                     {!! Form::text('quantity' , null , ['class'=>'form-control']) !!}
                 </div>
                 
-                @if($sub->attr1 != null)
+                <?php $i=1; ?>
+                @foreach($sub->options as $option)
                     <div class="form-group" style="width:60%">
-                        <label for="val1">{{$sub->attr1}}</label>
-                        {!! Form::text('val1' , null , ['class'=>'form-control']) !!}
+                       <label for="value{{$i}}">{{$option->name}}</label>
+                       <input type="text" name="value{{$i}}" id="value{{$i}}" class="form-control">
                     </div>
-                @endif
+                <?php $i++; ?>
+                @endforeach
+                
 
-                @if($sub->attr2 != null)
-                    <div class="form-group" style="width:60%">
-                        <label for="val2">{{$sub->attr2}}</label>
-                        {!! Form::text('val2' , null , ['class'=>'form-control']) !!}
-                    </div>
-                @endif
-
-                @if($sub->attr3 != null)
-                    <div class="form-group" style="width:60%">
-                        <label for="val3">{{$sub->attr3}}</label>
-                        {!! Form::text('val3' , null , ['class'=>'form-control']) !!}
-                    </div>
-                @endif
-
-                @if($sub->attr4 != null)
-                    <div class="form-group" style="width:60%">
-                        <label for="val4">{{$sub->attr4}}</label>
-                        {!! Form::text('val4' , null , ['class'=>'form-control']) !!}
-                    </div>
-                @endif
-
-
-                @if($sub->attr5 != null)
-                    <div class="form-group">
-                        <label for="val5">{{$sub->attr5}}</label>
-                        {!! Form::text('val5' , null , ['class'=>'form-control']) !!}
-                    </div>
-                @endif
 
                 
                 <div class="form-group">

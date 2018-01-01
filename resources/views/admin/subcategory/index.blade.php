@@ -53,11 +53,6 @@
                     <th>Name</th>
                     <th>Category</th>
                     <th>Brands</th>
-                    <th>Attr 1</th>
-                    <th>Attr 2</th>
-                    <th>Attr 3</th>
-                    <th>Attr 4</th>
-                    <th>Attr 5</th>
                     <th>Created At</th>
                     <th>Updated At</th>
                     <th>Edit</th>
@@ -67,17 +62,10 @@
                 @if($subs)
                     @foreach($subs as $sub)
                       <tr>
-                        
                         <td>{{ $sub->id }}</td>
                         <td>{{ $sub->name }}</td>
                         <td>{{ $sub->category->name }}</td>
                         <td><a href="{{ route('sub.brands' , $sub->id) }}">View</a></td>
-                        <td>{{ $sub->attr1 ? $sub->attr1 : "Empty" }}</td>
-                        <td>{{ $sub->attr2 ? $sub->attr2 : "Empty" }}</td>
-                        <td>{{ $sub->attr3 ? $sub->attr3 : "Empty" }}</td>
-                        <td>{{ $sub->attr4 ? $sub->attr4 : "Empty" }}</td>
-                        <td>{{ $sub->attr5 ? $sub->attr5 : "Empty" }}</td>
-                        
                         <td>{{$sub->created_at->diffForHumans()}}</td>
                         <td>{{$sub->updated_at->diffForHumans()}}</td>
                         <td><a href="{{ route('sub.edit' , $sub->id) }}">Edit</a></td>

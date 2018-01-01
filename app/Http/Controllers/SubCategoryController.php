@@ -46,8 +46,22 @@ class SubCategoryController extends Controller
 
         $category_id = $input['category_id'] ;
         $category = Category::findOrFail($category_id);
+        $count = $input['count'];
+        unset($input['count']);
 
         $sub = $category->subcategories()->create($input);
+        
+
+        return view('admin.subcategory.create2' , compact('count','sub'));
+    }
+
+    public function store2(Request $request,$sub_id){
+        $sub = Subcategory::findOrFail($sub_id);
+        $input = $request->all();
+        unset($input['_token']);
+        foreach($input as $option){
+            $sub->options()->create(['name'=>$option]);
+        }
 
         if($sub){
             Session::flash('createSub' , 'The Sub-Category Has Been Created Successfully');

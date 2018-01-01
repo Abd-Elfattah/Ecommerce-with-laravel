@@ -24,28 +24,22 @@
 
     <div class="row">
         <div class="col-lg-6 col-lg-offset-3">
-            {!! Form::open(['method'=>'POST' , 'action'=>'SubCategoryController@store']) !!}
+            {!! Form::open(['method'=>'POST' , 'action'=>['SubCategoryController@store2' , $sub->id]]) !!}
 
 
-                <div class="form-group">
-                    {!! Form::label('category_id','Category :') !!}
-                    {!! Form::select('category_id' , $categories , null , ['class'=>'form-control']) !!}
-                </div>
+                @for($i=1;$i<=$count;$i++)
+                    <div class="form-group">
+                        <label for="option{{$i}}">Option {{$i}}</label>
+                        <input type="text" name="option{{$i}}" id="option{{$i}}">
+                    </div>
+                @endfor
+                
 
-                <div class="form-group">
-                    {!! Form::label('name','Name :') !!}
-                    {!! Form::text('name' , null , ['class'=>'form-control']) !!}
-                </div>
-
-
-                <div class="form-group">
-                    {!! Form::label('count','Number of Options :') !!}
-                    {!! Form::text('count' , null , ['class'=>'form-control']) !!}
-                </div>
+                
 
                 
                 <div class="form-group">
-                    {!! Form::submit('Next' , ['class' => 'btn btn-primary']) !!}
+                    {!! Form::submit('Create Sub-Category' , ['class' => 'btn btn-primary']) !!}
                 </div>
             {!! Form::close() !!}
         </div>

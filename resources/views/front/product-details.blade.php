@@ -133,31 +133,16 @@
             <div id="myTabContent" class="tab-content">
               <div class="tab-pane fade active in" id="home">
 			  <h4>Product Information</h4>
-                <table class="table table-bordered">
+                <table class="table table-bordered" style="width: 60%">
 				<tbody>
 				<tr class="techSpecRow"><th colspan="2">Product Details</th></tr>
-				<tr class="techSpecRow"><td class="techSpecTD1">Brand: </td><td class="techSpecTD2">{{$product->brand->name}}</td></tr>
+				<tr class="techSpecRow"><td class="techSpecTD1">Brand </td><td class="techSpecTD2">{{$product->brand->name}}</td></tr>
 
-				@if($product->brand->subcategory->attr1 != null)
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr1}} :</td><td class="techSpecTD2" style="width:70%">{{$product->val1}}</td></tr>
-			@endif
+				@foreach($product->values as $value)
+					<tr class="techSpecRow"><td class="techSpecTD1">{{$value->option->name}} </td><td class="techSpecTD2">{{$value->name}}</td></tr>
+				@endforeach
 
-			@if($product->brand->subcategory->attr2 != null)
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr2}} :</td><td class="techSpecTD2">{{$product->val2}}</td></tr>
-			@endif
-
-			@if($product->brand->subcategory->attr3 != null)
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr3}} :</td><td class="techSpecTD2">{{$product->val3}}</td></tr>
-			@endif
-
-
-			@if($product->brand->subcategory->attr4 != '')
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr4}} :</td><td class="techSpecTD2">{{$product->val4}}</td></tr>
-			@endif
-
-			@if($product->brand->subcategory->attr5 != '')
-				<tr class="techSpecRow"><td class="techSpecTD1">{{$product->brand->subcategory->attr5}} :</td><td class="techSpecTD2">{{$product->val5}}</td></tr>
-			@endif
+				
 				
 				</tbody>
 				</table>
@@ -189,61 +174,8 @@
 		<script type="text/javascript">
 				$(document).ready(function(){
 		      	
-			      	// Product images Slider	
-			      		$('.slider').bxSlider();
-					// Product images Slider	
-
-
-				
-					// $('.product-cart').click(function(){
-
-					// 	var product_id = $(this).parent().find('.product-id').val();
-
-					// 	if($(this).hasClass('btn-primary')){
-					// 		$.ajax({
-					// 			type:'get',
-					// 			url:'{!!URL::to('removeFromCartAjax')!!}',
-					// 			data:{'id':product_id},
-					// 			success:function(cart_count){
-								
-					// 				$('.new-cart-update').text(cart_count);
-									
-
-
-					// 			},
-					// 			error:function(){
-									
-					// 			}
-					// 		})
-
-					// 		$(this).removeClass('btn-primary').html('Add To Cart <i class="icon-shopping-cart"></i>');
-
-
-
-
-
-					// 	// Add Session Product to Cart
-					// 	}else{
-					// 		$.ajax({
-					// 			type:'get',
-					// 			url:'{!!URL::to('addToCartAjax')!!}',
-					// 			data:{'id':product_id},
-					// 			success:function(cart_count){
-					// 				$('.new-cart-update').text(cart_count);
-
-					// 			},
-					// 			error:function(){
-
-					// 			}
-					// 		})
-
-
-					// 		$(this).addClass('btn-primary').html('Remove From <i class="icon-shopping-cart"></i>');
-							
-					// 	}
-
-						
-					// });
+	     	 		$('.slider').bxSlider();
+					
 				});
 
 

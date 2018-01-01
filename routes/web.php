@@ -68,6 +68,7 @@ Route::group(['middleware'=> ['admin']] , function(){
 	// Admin SubCategories
 	Route::resource('admin/subcategories' , 'SubCategoryController');
 	Route::get('admin/subcategories/create' , 'SubCategoryController@create')->name('sub.create');
+	Route::post('admin/subcategories/store2/{id}' , 'SubCategoryController@store2');
 	Route::get('admin/subcategories/{id}/edit' , 'SubCategoryController@edit')->name('sub.edit');
 	Route::get('admin/subcategories' , 'SubCategoryController@index')->name('sub.index');
 
@@ -86,7 +87,7 @@ Route::group(['middleware'=> ['admin']] , function(){
 
 	// Admin Products 
 	Route::resource('admin/products' , 'ProductController');
-	Route::post('admin/products2/{id}' , 'ProductController@secondStore');
+	Route::post('admin/products2/{product_id}/{sub_id}' , 'ProductController@secondStore');
 	Route::post('admin/products3/{id}/{color_id}' , 'ProductController@thirdStore');
 	Route::get('admin/product/details/{id}' , 'ProductController@adminProductDetails')->name('product.details');
 	Route::post('admin/product/{id}/addDiscount' , 'ProductController@addDiscount');

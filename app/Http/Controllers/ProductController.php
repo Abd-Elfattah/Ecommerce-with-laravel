@@ -10,54 +10,32 @@ use App\Brand;
 use App\Product;
 use App\Color;
 use App\Photo;
+use App\Option;
+use App\Value;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+
     public function index()
     {   
         $products = Product::paginate(10);
         return view('admin.product.index',compact('products'));
     }
 
-    // public function test(){
-    //     $x=13; 
-    //     $y = 2342;
-    //     $z = [];
-    //     $z[] = $x;
-    //     $z[] = $y;
-    //     return redirect()->back();
-
-    // }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
+   
     public function create()
     {
         $categories = Category::all();
         return view('admin.product.create' , compact('categories'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(Request $request)
     {
-        if(trim($request->offer_price) == ''){
-            $input = $request->except('offer_price');
-        }else{
-            $input = $request->all();
-        }
+        
+        $input = $request->all();
 
         unset($input['subcategory_id']);
 
@@ -73,34 +51,24 @@ class ProductController extends Controller
     }
 
 
-    public function secondStore(Request $request , $id){
+    public function secondStore(Request $request , $product_id , $sub_id){
 
-        $product = Product::findOrFail($id);
+        $product = Product::findOrFail($product_id);
         $product->colors()->attach($request->color_id , ['quantity'=>$request->quantity]);
         $color_id = $request->color_id;
-        //$input = $request->all;
+        $input = $request->all();
+        unset($input['color_id']);
+        unset($input['quantity']);
+        unset($input['_token']);
 
-        if( trim($request->val1) != ''){
-            $product->update(['val1'=>$request->val1]);
+        $sub = Subcategory::findOrFail($sub_id);
+        foreach($sub->options as $option){
+            foreach ($input as $key => $value) {
+                $option->values()->create(['product_id'=>$product_id , 'name'=>$value]);
+                unset($input[$key]);
+                break;
+            }
         }
-
-        if(trim($request->val2) != ''){
-            $product->update(['val2'=>$request->val2]);
-        }
-
-        if(trim($request->val3) != ''){
-            $product->update(['val3'=>$request->val3]);
-        }
-
-        if(trim($request->val4) != ''){
-            $product->update(['val4'=>$request->val4]);
-        }
-
-
-        if(trim($request->val5) != ''){
-            $product->update(['val5'=>$request->val5]);
-        }
-
 
         return view('admin.product.create3', compact('product','color_id'));
 
@@ -122,24 +90,12 @@ class ProductController extends Controller
 
 
      
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    
     public function edit($id)
     {
         //
@@ -181,8 +137,7 @@ class ProductController extends Controller
 
     public function adminProductDetails($id){
         $product = Product::findOrFail($id);
-
-
+        $sub = $product->brand->subcategory;
         return view('admin.product.productDetails',compact('product'));
     }
 

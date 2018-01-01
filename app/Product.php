@@ -11,12 +11,7 @@ class Product extends Model
     	'name',
     	'price',
     	'offer_price',
-    	'description',
-    	'val1',
-    	'val2',
-    	'val3',
-    	'val4',
-    	'val5'
+    	'description'
     ];
 
 
@@ -29,6 +24,9 @@ class Product extends Model
     	return $this->belongsToMany('App\Color')->withPivot('quantity')->withTimestamps();
     }
 
+    public function values(){
+        return $this->hasMany('App\Value');
+    }
 
     public function photos(){
     	return $this->hasMany('App\Photo');
