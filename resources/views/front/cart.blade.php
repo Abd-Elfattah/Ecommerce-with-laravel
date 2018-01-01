@@ -17,7 +17,7 @@
 	
 @if(Session::has('cart'))		
 	@if( $cart->totQty > 0)
-	<table class="table table-bordered">
+	<table class="table table-bordered" style="margin-bottom: 40px">
               <thead>
                 <tr>
                   <th>Product</th>
@@ -139,7 +139,7 @@
 	</table>
 
 
-	<table class="table table-bordered" style="width:40%">
+	<table class="table table-bordered pull-left" style="width:40%;margin-right: 35px" >
 		<tbody>
 			<tr>
 		      <td style="text-align:left">Total Price	</td>
@@ -162,13 +162,25 @@
 		
 			
 			
-		{!! Form::open(['method'=>'POST' , 'action'=>'CartController@checkOut']) !!}
-			
+		
+			{!! Form::open(['method'=>'POST' , 'action'=>'CartController@checkOut' , 'class'=>'pull-left']) !!}
 			<div class="form-group">
-				<button type="submit" class="btn btn-large btn-success pull-right">Checkout <i class="icon-arrow-right"></i></button>
+				@if(Auth::user()->addresses->count() > 0)
+				<p style="font-size: 18px;font-weight: bold">Select Address</p>
+				@foreach(Auth::user()->addresses as $address)
+					<p style="font-size: 15px;font-weight: bold">
+						<input type="radio" name="address_id" value="{{$address->id}}">
+						<span>{{ $address->city }}</span>
+						<span>, {{ $address->area }}</span>
+						<p style="margin-left:20px;margin-top: -10px;font-weight: bold">{{ $address->mobile }}</p>
+					</p>
+				@endforeach
+				@endif
+				<button class="btn btn-large btn-success pull-left">Checkout <i class="icon-arrow-right"></i></button>
 
 			</div>
-		{!! Form::close() !!}
+			{!! Form::close() !!}
+		
 	@else 
 		<h2>Cart is Empty</h2>
 	@endif	

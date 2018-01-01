@@ -58,5 +58,21 @@ class Product extends Model
         return $count;
     }
 
+    // All Products with No out Of stock
+    public static function productsIfOutOfStock($products){
+        $all = [];
+        foreach( $products as $product ){
+            foreach ($product->colors as $color ) {
+                $color_product = $product->colors()->where('color_id',$color->id)->first()->pivot;
+                if( $color_product->quantity > 0 ){
+                    $all[] = $product;
+                    break;
+                }
+            }
+        }
+
+        return $all;
+    }
+
 
 }

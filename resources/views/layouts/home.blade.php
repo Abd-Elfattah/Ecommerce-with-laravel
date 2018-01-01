@@ -27,6 +27,9 @@
 <!-- Google-code-prettify -->	
 	<link href="{{ asset('themes/js/google-code-prettify/prettify.css') }}" rel="stylesheet"/>
 <!-- fav and touch icons -->
+	
+	<link rel="shortcut icon" href="{{ asset('themes/images/ico/favicon.ico') }}">
+	<link rel="apple-touch-icon-precomposed" href="{{ asset('themes/images/ico/apple-touch-icon-57-precomposed.png') }}">
 
 
 
@@ -58,6 +61,47 @@
 		.navbar .nav>li>a:hover
 		{
 			color:#FFF;
+		}
+		.showResult{
+		
+		    position: absolute;
+		    /*display: inline-block;*/
+		    right: 71px;
+    		width: 269px;
+		    margin-top: -7px;
+		    z-index: 1;
+		    background-color: #fff;
+		    border-radius: 2px;
+			
+		}
+		.showResult li{
+			display: block;
+			background-color:#FFFFFF;
+			color: #2BBCDE;
+			padding-left: 17px; 
+			padding-bottom: 5px; 
+			padding-top: 5px; 
+			list-style: none;
+			cursor: pointer;	
+			border: 1px solid #ddd;	
+			margin: 2px;		
+			border-radius: 5px;
+			font-weight: bold;
+		}
+
+		.showResult li:hover{
+			background-color: #e0e0d1;
+		}
+
+		.searchPhoto{
+			width:40px;
+			height: 45px;
+			margin-right: 13px;
+		}
+		.see-all{
+				background:none;
+			  	border:none;
+			  	font-size:1em;
 		}
 	</style>
 
@@ -91,16 +135,23 @@
   <div class="navbar-inner">
     <a class="brand" href="{{ route('homePage')}}"><img src="{{asset('themes/images/logo.png')}}" alt="Bootsshop"/></a>
 
-    	<!-- Search -->
-		<form class="form-inline navbar-search" method="post" action="products.html" style="margin-left:100px">
-			<input id="srchFld" class="srchTxt" type="text" style="padding-left:30px;width: 300px" />
+	<!-- Search -->
+		<div>
+		{!! Form::open(['method'=>'GET' , 'action'=>'FrontController@search' , 'class'=>'form-inline navbar-search' , 'style'=>'margin-left:100px']) !!}
+		{!! csrf_field() !!}
+			<input class="search" name="search" class="srchTxt" placeholder="Search ... " type="text" style="padding-left:10px;width: 250px" />
+			<ul class="showResult">
+				
+			</ul>
 		  
 		  	<button type="submit" id="submitButton" class="btn btn-primary">Search</button>
-    	</form>
-    	<!-- Search -->
+		{!! Form::close() !!}
+		</div>
+		 <!-- {!! Form::text('search_text', null, array('placeholder' => 'Search Text','class' => 'form-control','id'=>'search_text')) !!} -->
+	<!-- Search -->
 
 
-    <ul id="topMenu" class="nav pull-left" style="margin-left:120px;margin-bottom:0px">
+    <ul id="topMenu" class="nav pull-left" style="margin-left:190px;margin-bottom:0px">
 	 <!-- <li class=""><a href="{{url('/Eco-home/special-offers')}}">Special Offers</a></li> -->
 	 <!-- <li class=""><a href="normal.html">Delivery</a></li> -->
 	 <!-- <li class=""><a href="contact.html">Contact</a></li> -->
@@ -118,14 +169,14 @@
 	 </li>
 @endif
 
-	@if(!Auth::check())
-		 <li>
-		 <a href="{{ route('login') }}"  style=""><span class="btn btn-success">Sign-in</span></a>
-		 </li>
-		 <li>
-		 <a href="{{ route('register') }}"  style=""><span class="btn btn-default">Register</span></a>
-		 </li>
-	@endif
+@if(!Auth::check())
+	 <li>
+	 <a href="{{ route('login') }}"  style=""><span class="btn btn-success">Sign-in</span></a>
+	 </li>
+	 <li>
+	 <a href="{{ route('register') }}"  style=""><span class="btn btn-default">Register</span></a>
+	 </li>
+@endif
 
 	  <!-- role="button" data-toggle="modal" -->
 	<!--  <a href="product_summary.html"><span class="btn btn-mini btn-primary"><i class="icon-shopping-cart icon-white"></i> [ 3 ] Itemes in your cart </span> </a>  -->
@@ -177,14 +228,17 @@
 	<div id="sidebar" class="span3">
 	@if(Auth::check())
 		<div class="well well-small"><a id="myCart" href="{{route('cart.show')}}"><img src="{{ asset('themes/images/ico-cart.png') }}" alt="cart">
-		<span class="new-cart-update">{{ Session::has('cart') ? count(Session::get('cart')->items) : "0"}}</span> Items in cart 
-	@else
+		<span class="new-cart-update">{{ Session::has('cart') ? count(Session::get('cart')->items) : "0"}}</span> Items in cart 	@else
 		<div class="well well-small"><a id="myCart" href="{{route('login')}}"><img src="{{ asset('themes/images/ico-cart.png') }}" alt="cart">
 		<span class="new-cart-update">0</span> Items in cart
 	@endif
 
+		@if(Auth::check())
+		<span class="badge badge-warning pull-right">
+			{{ Session::has('cart') ? Session::get('cart')->totPrice : "0" }} EGP
+		</span>
+		@endif
 		
-		<span class="badge badge-warning pull-right">{{ Session::has('cart') ? Session::get('cart')->totPrice : "0" }} EGP</span>
 		
 		</a></div>
 		
@@ -197,7 +251,7 @@
 						<li class="subMenu open"><a>{{ $cat->name }}</a>
 							<ul>
 								@foreach($cat->subcategories as $sub)
-									<li><a class="active"  href="{{ route('sub-category.show' , $sub->id) }}"><i class="icon-chevron-right"></i>{{$sub->name}}
+									<li><a class="active"  href="{{ route('sub-category.show' , ['id'=>$sub->id,'current_page'=>1]) }}"><i class="icon-chevron-right"></i>{{$sub->name}}
 									{{ "(" . App\Product::countIfOutOfStock($sub->products) . ")" }}
 									</a> 
 									
@@ -211,7 +265,7 @@
 						<li class="subMenu"><a> {{ $cat->name }} </a>
 							<ul style="display:none">
 								@foreach($cat->subcategories as $sub)
-									<li><a href="{{ route('sub-category.show' , $sub->id) }}"><i class="icon-chevron-right"></i>
+									<li><a href="{{ route('sub-category.show' , ['id'=>$sub->id,'current_page'=>1]) }}"><i class="icon-chevron-right"></i>
 										{{$sub->name}}
 										{{ "(" . App\Product::countIfOutOfStock($sub->products) . ")" }}
 									</a></li>
@@ -301,27 +355,19 @@
 		<div class="row">
 			<div class="span3">
 				<h5>ACCOUNT</h5>
-				<a href="login.html">YOUR ACCOUNT</a>
-				<a href="login.html">PERSONAL INFORMATION</a> 
-				<a href="login.html">ADDRESSES</a> 
-				<a href="login.html">DISCOUNT</a>  
-				<a href="login.html">ORDER HISTORY</a>
-			 </div>
-			<div class="span3">
-				<h5>INFORMATION</h5>
-				<a href="contact.html">CONTACT</a>  
-				<a href="register.html">REGISTRATION</a>  
-				<a href="legal_notice.html">LEGAL NOTICE</a>  
-				<a href="tac.html">TERMS AND CONDITIONS</a> 
-				<a href="faq.html">FAQ</a>
+				@if(Auth::check())
+					<a href="{{route('user.address',Auth::user()->id)}}">ADDRESSES</a> 
+					<a href="{{route('user.orders',Auth::user()->id)}}">ORDER HISTORY</a>
+				@else
+					<a href="{{route('login')}}">ADDRESSES</a> 
+					<a href="{{route('login')}}">ORDER HISTORY</a>
+				@endif
 			 </div>
 			<div class="span3">
 				<h5>OUR OFFERS</h5>
 				<a href="#">NEW PRODUCTS</a> 
 				<a href="#">TOP SELLERS</a>  
-				<a href="special_offer.html">SPECIAL OFFERS</a>  
-				<a href="#">MANUFACTURERS</a> 
-				<a href="#">SUPPLIERS</a> 
+				<a href="{{ route('offers') }}">SPECIAL OFFERS</a>  
 			 </div>
 			<!-- <div id="socialMedia" class="span3 pull-right">
 				<h5>SOCIAL MEDIA </h5>
@@ -333,6 +379,7 @@
 		<p class="pull-right">&copy; Mahmoud Abd-Elfattah</p>
 	</div><!-- Container End -->
 	</div>
+
 	
 
 
@@ -348,6 +395,52 @@
 	<script src="{{ asset('themes/js/bootshop.js') }}"></script>
     <script src="{{ asset('themes/js/jquery.lightbox-0.5.js') }}"></script>
 
+
+    <script type="text/javascript">
+    	
+    	$(document).ready(function(){
+    		$('.search').keyup(function(){
+    				
+
+    			if( $('.search').val() != '' ){
+    				var search_word = $(this).val();
+    				var url = "{{ route('autoComplete') }}";
+    				var li_lists = "";
+
+    				$.ajax({
+    					url:url,
+    					method:"GET",
+    					data:{search_word:search_word},
+    					success:function(data){
+    						// console.log(data[1]);
+    						if(data[0] == 'success'){
+    							data = data[1];
+	    						for(var i=0; i <= 3 ;i++){
+	    							li_lists+='<a style="text-decoration:none" href="'+data[i]['link']+'"><li><img class="searchPhoto" src="'+data[i]['path']+'"><span>'+data[i]['name']+'</span></li></a>';
+	    							$('.showResult').html(" ").append(li_lists);
+	    						}
+
+	    						if(data.length > 3){
+	    							see_all='<li><input class="see-all" type="submit" value="See All Results"></li>';
+	    							$('.showResult').append(see_all);
+	    						}
+
+    						}else{
+    							li_lists+='<li>No Search Results</li>';
+    							$('.showResult').html(" ").append(li_lists);
+    						}
+    						
+    					}
+    				});
+
+
+    			}else{
+    				$('.showResult').empty();
+    			}
+    		});
+    	});
+ 		
+	</script>
 
     @yield('scripts')
 

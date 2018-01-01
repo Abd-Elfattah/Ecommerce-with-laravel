@@ -4,6 +4,7 @@ namespace App;
 use App\Product;
 use App\Color;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class Cart 
 {
@@ -11,6 +12,8 @@ class Cart
     public $totPrice = 0;
     public $totDisc = 0;
     Public $totQty = 0;
+    public $user_id =0;
+    public $addres_id=0;
 
     public function __construct($oldCart){
     	if($oldCart){
@@ -19,6 +22,13 @@ class Cart
     		$this->totQty = $oldCart->totQty;
     		$this->totDisc = $oldCart->totDisc;
     	}
+
+        $this->user_id = Auth::user()->id;
+    }
+
+    public function address($user_id,$address_id){
+        $this->user_id = $user_id;
+        $this->address_id = $addres_id;
     }
 
     public function add($product_id,$color_id){

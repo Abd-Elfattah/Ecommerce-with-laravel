@@ -51,9 +51,9 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'firstname' => 'required|max:255',
-            'lastname' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
+            'firstname' => 'required|min:4|max:16',
+            'lastname' => 'required|min:4|max:16',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -75,7 +75,7 @@ class RegisterController extends Controller
         ]);
 
         
-        // $this->sendMail($user);
+        $this->sendMail($user);
         return $user;
     }
 

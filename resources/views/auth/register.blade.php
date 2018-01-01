@@ -18,7 +18,7 @@
     <h3> Sign-Up</h3>   
     <div class="well" style="width:80%">
 
-                    <form class="form-horizontal" role="form" method="POST" action="{{ url('Eco-home/register') }}">
+                    <form class="form-horizontal" id="form" role="form" method="POST" action="{{ url('Eco-home/register') }}">
                         {{ csrf_field() }}
 
                         <div class="control-group{{ $errors->has('firstname') ? ' has-error' : '' }}">
@@ -27,8 +27,15 @@
                             <div class="col-md-6">
                                 <input id="firstname" type="text" class="form-control" name="firstname" value="{{ old('firstname') }}">
 
+                                <span class="fail" style="display:none;color:#b94a48;margin-left: 20px;font-size: 15px;font-weight: bold">
+                                <i class="fa fa-times-circle"></i><span></span>
+                                </span>
+                                <span class="success" style="display:none;color:#3c763d;;margin-left: 20px;font-size: 15px;font-weight: bold">
+                                <i class="fa fa-check-circle"></i><span></span>
+                                </span>
+
                                 @if ($errors->has('firstname'))
-                                    <span class="help-block pull-right">
+                                    <span class="help-block" style="color:#b94a48;margin-left: 190px;">
                                         <strong>{{ $errors->first('firstname') }}</strong>
                                     </span>
                                 @endif
@@ -41,9 +48,16 @@
 
                             <div class="col-md-6">
                                 <input id="lastname" type="text" class="form-control" name="lastname" value="{{ old('lastname') }}">
+                                <span class="fail" style="display:none;color:#b94a48;margin-left: 20px;font-size: 15px;font-weight: bold">
+                                <i class="fa fa-times-circle"></i><span></span>
+                                </span>
+                                <span class="success" style="display:none;color:#3c763d;;margin-left: 20px;font-size: 15px;font-weight: bold">
+                                <i class="fa fa-check-circle"></i><span></span>
+                                </span>
+                                
 
                                 @if ($errors->has('lastname'))
-                                    <span class="help-block pull-right">
+                                    <span class="help-block" style="color:#b94a48;margin-left: 190px;">
                                         <strong>{{ $errors->first('lastname') }}</strong>
                                     </span>
                                 @endif
@@ -57,7 +71,7 @@
                                 <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" >
 
                                 @if ($errors->has('email'))
-                                    <span class="help-block pull-right">
+                                    <span class="help-block" style="color:#b94a48;margin-left: 190px;">
                                         <strong>{{ $errors->first('email') }}</strong>
                                     </span>
                                 @endif
@@ -71,7 +85,7 @@
                                 <input id="password" type="password" class="form-control" name="password" >
 
                                 @if ($errors->has('password'))
-                                    <span class="help-block pull-right">
+                                    <span class="help-block" style="color:#b94a48;margin-left: 190px;">
                                         <strong>{{ $errors->first('password') }}</strong>
                                     </span>
                                 @endif
@@ -97,3 +111,47 @@
 
 @endsection
 
+@section('scripts')
+    <script type="text/javascript">
+        // $(document).ready(function(){
+        //     $('#firstname').keyup(function(){
+        //         var value = $(this).val();
+        //         if(value.length < 4){
+        //             $(this).parent().find('.success').hide();
+        //             $(this).parent().find('.fail').show();
+        //             $(this).parent().find('.fail').find('span').text(' First Name at least 4');
+                    
+
+        //             $('#form').submit(function(evt){
+        //                 evt.preventDefault();
+        //             });
+                    
+        //         }else{
+        //             $(this).parent().find('.success').show();
+        //             $(this).parent().find('.fail').hide();
+        //             $(this).parent().find('.success').find('span').text(' Success');
+        //             var firstname = true;
+        //             $( "#target" ).submit();
+
+        //         }
+        //     });
+
+
+        //     $('#lastname').keyup(function(){
+        //         var value = $(this).val();
+        //         if(value.length < 4){
+        //             $(this).parent().find('.success').hide();
+        //             $(this).parent().find('.fail').show();
+        //             $(this).parent().find('.fail').find('span').text(' First Name at least 4');
+        //         }else{
+        //             $(this).parent().find('.success').show();
+        //             $(this).parent().find('.fail').hide();
+        //             $(this).parent().find('.success').find('span').text(' Success');
+        //         }
+        //     });
+
+            
+        // });
+
+    </script>
+@stop

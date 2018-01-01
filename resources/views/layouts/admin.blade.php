@@ -187,7 +187,7 @@
                         <a href="{{ route('products.index') }}"><i class="fa fa-fw fa-desktop"></i> Products</a>
                     </li>
                     <li>
-                        <a href="bootstrap-grid.html"><i class="fa fa-fw fa-wrench"></i> Bootstrap Grid</a>
+                        <a href="{{route('payments')}}"><i class="fa fa-fw fa-wrench"></i> Orders</a>
                     </li>
                     
                     <li class="">

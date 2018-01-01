@@ -24,13 +24,20 @@ class CartController extends Controller
                 $product_id = $product['product_id'];
                 $color_id = $product['color_id'];
                 $color_product  = Product::find($product_id)->colors()->where('color_id' , $color_id)->withPivot('id')->first()->pivot;
-                $product = Product::findOrFail($product_id);
-                if( $product->offer_price == 0 ){
-                    $price = $product->price;
+                $item = Product::findOrFail($product_id);
+                if( $item->offer_price == 0 ){
+                    $price = $item->price;
                     $discount = 0;
                 }else{
-                    $price = $product->offer_price;
-                    $discount = $price-$product->offer_price;
+                    $price = $item->offer_price;
+                    $discount = $price-$item->offer_price;
+                }
+
+                if($price != $product['price']){
+                    
+                    Session::flash('cartFailed','('.Product::find($product_id)->name . " - " . Color::find($color_id)->name .' Color) Price hac Changed From ' . $product['price'] . ' To ' .$price);
+                    $cart->remove($product_id,$color_id);
+                    $cart->add($product_id,$color_id);
                 }
 
                 // Validation if out of stock, or reqiured quantity less than what exist already
@@ -101,14 +108,47 @@ class CartController extends Controller
 
 
     // CheckOut and make Payments
-    public function checkOut(){
+    public function checkOut(Request $request){
         $cart = Session::get('cart');
+        if(Auth::user()->addresses->count() == 0){
+            Session::flash('cartFailed' , 'You Havn\'t any Addresses, Update Your Profile');
+            return redirect()->back();
+        }
+        if($request->address_id == null){
+            Session::flash('cartFailed' , 'Select Address to Checkout');
+            return redirect()->back();
+        }
+        $cart->user_id = Auth::user()->id;
+        $cart->address_id = $request->address_id;
+
+
         foreach($cart->items as $item){
             $product_id = $item['product_id'];
             $color_id = $item['color_id'];
             $color_product = Product::findOrFail($product_id)->colors()->where('color_id',$color_id)
                 ->withPivot('id')->first()->pivot;
 
+
+            // if price of item has changed
+            $product = Product::findOrFail($product_id);
+            if( $product->offer_price == 0 ){
+                $price = $product->price;
+                $discount = 0;
+            }else{
+                $price = $product->offer_price;
+                $discount = $price-$product->offer_price;
+            }
+
+            if($price != $item['price']){
+                
+                Session::flash('cartFailed','('.Product::find($product_id)->name . " - " . Color::find($color_id)->name .' Color) Price hac Changed From ' . $item['price'] . ' To ' .$price);
+                $cart->remove($product_id,$color_id);
+                $cart->add($product_id,$color_id);
+                return redirect()->back();
+            }
+
+
+            // if out of stock
             if($color_product->quantity == 0 && $item['quantity'] > 0){
                 $cart->remove($product_id,$color_id);
                 Session::flash('cartFailed' , '('.Product::find($product_id)->name . " - " . Color::find($color_id)->name .' Color), is out of stock now .');
@@ -123,13 +163,13 @@ class CartController extends Controller
         }
 
 
+
         // If Validation is end and all successful
         //Create Payment
-        $user    = Auth::user();
-        $address = $user->addresses()->first();
+        
         $payment = Payment::create([
-            'user_id'=>$user->id, 
-            'address_id'=>$address->id,
+            'user_id'=>$cart->user_id, 
+            'address_id'=>$cart->address_id,
             'totall_before_discount'=>($cart->totPrice+$cart->totDisc),
             'totall_discount'=>$cart->totDisc,
             'totall_price'=>$cart->totPrice

@@ -25,10 +25,11 @@ class ProfileController extends Controller
     public function storeAddress(Request $request , $id)
     {
     	$this->validate($request , [
-    		'city' => 'required',
+    		'city' => 'string|required|min:4',
     		'area' => 'required', 
     		'location_type' => 'required', 
-    		'mobile' => 'required|min:11|max:11|unique:addresses' 
+    		// 'mobile' => 'required|unique:addresses|Numeric' 
+            'mobile' => 'unique:addresses|required|regex:/(01)[0-9]{9}/'
     	]);
 
     	$user = User::findOrFail($id);
@@ -40,7 +41,7 @@ class ProfileController extends Controller
 
     public function showOrders($id){
         $user = User::findOrFail($id);
-        $payments = Payment::where('user_id' , $user->id)->paginate(2);
+        $payments = Payment::where('user_id' , $user->id)->orderBy('id','DESC')->paginate(2);
         return view('front.orders' , compact('user','payments'));
     }
 }

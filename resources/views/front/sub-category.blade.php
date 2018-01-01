@@ -1,7 +1,7 @@
 @extends('layouts.home')
 
 @section('styles')
-
+	
 	<style type="text/css">
 		.before-discount{
 			
@@ -21,7 +21,7 @@
 @section('content')
 	<div class="span9">
     <ul class="breadcrumb">
-		<li><a href="{!! url('Eco-home') !!}">Home</a> <span class="divider">/</span></li>
+		<li><a href="{{ route('homePage') }}">Home</a> <span class="divider">/</span></li>
 		<li class="active">{{$sub->name}}</li> 
 		
     </ul>
@@ -33,32 +33,82 @@
 	@endif
 	products are available </small></h3>	
 	<hr class="soft"/>
+
+	@if($count == 0)
+	<div class="span9">
+		<h3>Empty Category</h3>
+	</div>
+	@endif
 	
+
+
+	@if($count > 0)
 	<form class="form-horizontal span9">
 		<div class="control-group">
-		  <label class="control-label alignL">Sort By </label>
-			<select id="sortBy" onchange="location = this.value;">
-              <option selected disabled>Select</option>
-              <option value="{{ route('sortBy.priceLowestFirst' , $sub->id) }}">Price Lowest first</option>
-              <option value="{{ route('sortBy.priceHighestFirst' , $sub->id) }}">Price Highest first</option>
-              <option value="{{ route('sortBy.discount' , $sub->id) }}">Discount Only</option>
+		  <label class="control-label alignL" style="font-weight: bold">Sort By </label>
+			<select id="sortBy" style="width: 170px" onchange="location = this.value;">
+			@if(!$sort_type)
+              <option selected disabled>Sort By</option>
+            @endif
+
+            @if($sort_type == 'low')
+              <option value="{{ route('sortBy.priceLowestFirst',['id'=>$sub->id,'current_page'=>1]) }}" selected>Price Lowest first</option>
+            @else
+              <option value="{{ route('sortBy.priceLowestFirst' , ['id'=>$sub->id,'current_page'=>1]) }}">Price Lowest first</option>
+            @endif
+
+            	
+            @if($sort_type == 'high' )
+              <option value="{{ route('sortBy.priceHighestFirst' ,['id'=>$sub->id,'current_page'=>1]) }}" selected>Price Highest first</option>
+            @else
+            	<option value="{{ route('sortBy.priceHighestFirst' ,['id'=>$sub->id,'current_page'=>1]) }}">Price Highest first</option>
+            @endif
+
+            @if($sort_type == 'disc')
+              <option value="{{ route('sortBy.discount' ,['id'=>$sub->id,'current_page'=>1]) }}" selected>Discount Only</option>
+            @else
+              <option value="{{ route('sortBy.discount' ,['id'=>$sub->id,'current_page'=>1]) }}">Discount Only</option>
+            @endif
+
+            @if($sort_type == 'brand')
+              <option value="brands" selected>Brand</option>
+            @else
               <option value="brands">Brand</option>
+            @endif
             </select>
 
-            <select id="brands" onchange="location = this.value;" style="display:none">
-              <option selected disabled>Select Brand</option>
-	              @foreach( $sub->brands as $brand )
-	              	<option value="{{ route('sortBy.brand' , ['sub_id'=>$sub->id , 'brand_id'=>$brand->id]) }}">{{ $brand->name }}</option>
+
+
+            @if($sort_type == 'brand')
+            	<select id="brands" onchange="location = this.value;" style="width: 150px;margin-left: 20px">
+            		@foreach( $sub->brands as $brand )
+	              	@if($brand_id == $brand->id)
+	              		<option value="{{ route('sortBy.brand' , ['sub_id'=>$sub->id , 'brand_id'=>$brand->id,'current_page'=>1]) }}" selected>{{ $brand->name }}</option>
+	              	@else
+	              		<option value="{{ route('sortBy.brand' , ['sub_id'=>$sub->id , 'brand_id'=>$brand->id,'current_page'=>1]) }}">{{ $brand->name }}</option>
+	              	@endif
 	              @endforeach
-            </select>
+	            </select>
+            @endif
+
+
+            @if($sort_type != 'brand')
+            	<select id="brands" onchange="location = this.value;" style="width: 150px;margin-left: 20px;display:none">
+            		<option selected disabled>Select Brand</option>
+            		@foreach( $sub->brands as $brand )
+	              		<option value="{{ route('sortBy.brand' , ['sub_id'=>$sub->id , 'brand_id'=>$brand->id,'current_page'=>1]) }}">{{ $brand->name }}</option>
+	              @endforeach
+	            </select>
+            @endif
 		</div>
 	</form>
 
-	  
+		<br class="clr"/>
+	@endif	  
 
 
 
-<br class="clr"/>
+
 <div class="tab-content">
 	
 	<div class="tab-pane  active" id="blockView">
@@ -116,7 +166,7 @@
 										   	</h4>
 										   	<span class="discount" style="position:relative;top:-310px;left:-14px;">
 												{{ floor((100-(($product->offer_price/$product->price)*100)) ) }}% off
-												</span>
+											</span>
 										   	<p class="before-discount">
 													{{$product->price}} EGP
 											</p>
@@ -128,7 +178,7 @@
 						<!-- if No offer price found -->
 						@if($product->offer_price == 0)
 						  
-					   		 <h4 style="text-align:center"><input type="hidden" class="product-id" value="{{ $product->id }}" >
+					   		 <h4 style="text-align:center">
 						
 							@if($color_product=$color->pivot)
 								@if(Session::has('cart') && Session::get('cart')->totQty > 0 )
@@ -150,11 +200,14 @@
 
 							
 								   
-						   	<span class="price">{{$product->price}} EGP</span>
-						   			
-								  
-
+						   	<span class="price">{{$product->price}} EGP</span>				
 						   	</h4>
+						   	<span class="discount" style="position:relative;top:-310px;left:-14px;opacity:0">
+								0% off
+							</span>
+						   	<p class="before-discount" style="opacity:0">
+									0 EGP
+							</p>
 						@endif
 						<!-- if No offer price found -->
 
@@ -167,21 +220,152 @@
 				@endforeach
 			@endforeach
 		@endif
-
-			
-
-		
 			
 		  </ul>
-	<hr class="soft"/>
+
+	@if($count > 0)
+		  <hr class="soft"/>
+
+		@if($page->per_page < $page->totall_items)
+		  <!-- Pagination -->
+		  <div class="pagination" style="text-align: center;">
+		  	<ul>
+		  	<!-- sort in sub-category MainPage -->
+		  	@if($sort_type == null)
+		  		@if($page->previous)
+			  		<li><a href="{{route('sub-category.show' , ['id'=>$sub->id , 'current_page'=>($page->current_page-1)])}}">Previous</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Previous</a></li>
+			  	@endif
+
+				  @for($i=1; $i <= $page->totall_pages ; $i++)
+				  	@if($page->current_page == $i)
+				  		<li class="active"><a class="page-link" href="#">{{ $i }}</a></li>
+				  	@else
+				  		<li><a class="page-link" href="{{route('sub-category.show' , ['id'=>$sub->id , 'current_page'=>$i])}}">{{ $i }}</a></li>
+				  	@endif	
+				  @endfor
+
+			  	@if($page->next)
+			  		<li><a href="{{route('sub-category.show' , ['id'=>$sub->id , 'current_page'=>($page->current_page+1)])}}">Next</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Next</a></li>
+			  	@endif
+			@endif
+
+
+			<!-- sort in sub-category disc -->
+		  	@if($sort_type == 'disc')
+		  		@if($page->previous)
+			  		<li><a href="{{route('sortBy.discount' , ['id'=>$sub->id , 'current_page'=>($page->current_page-1)])}}">Previous</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Previous</a></li>
+			  	@endif
+
+				  @for($i=1; $i <= $page->totall_pages ; $i++)
+				  	@if($page->current_page == $i)
+				  		<li class="active"><a class="page-link" href="#">{{ $i }}</a></li>
+				  	@else
+				  		<li><a class="page-link" href="{{route('sortBy.discount' , ['id'=>$sub->id , 'current_page'=>$i])}}">{{ $i }}</a></li>
+				  	@endif	
+				  @endfor
+
+			  	@if($page->next)
+			  		<li><a href="{{route('sortBy.discount' , ['id'=>$sub->id , 'current_page'=>($page->current_page+1)])}}">Next</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Next</a></li>
+			  	@endif
+			@endif
+
+
+			<!-- sort in sub-category Brand -->
+		  	@if($sort_type == 'brand')
+		  		@if($page->previous)
+			  		<li><a href="{{route('sortBy.brand' , ['id'=>$sub->id , 'brand_id'=>$brand_id ,'current_page'=>($page->current_page-1)])}}">Previous</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Previous</a></li>
+			  	@endif
+
+				  @for($i=1; $i <= $page->totall_pages ; $i++)
+				  	@if($page->current_page == $i)
+				  		<li class="active"><a class="page-link" href="#">{{ $i }}</a></li>
+				  	@else
+				  		<li><a class="page-link" href="{{route('sortBy.brand' , ['id'=>$sub->id , 'brand_id'=>$brand_id ,'current_page'=>$i])}}">{{ $i }}</a></li>
+				  	@endif	
+				  @endfor
+
+			  	@if($page->next)
+			  		<li><a href="{{route('sortBy.brand' , ['id'=>$sub->id , 'brand_id'=>$brand_id ,'current_page'=>($page->current_page+1)])}}">Next</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Next</a></li>
+			  	@endif
+			@endif
+
+			<!-- sort in sub-category Lowest Price -->
+		  	@if($sort_type == 'low')
+		  		@if($page->previous)
+			  		<li><a href="{{route('sortBy.priceLowestFirst' , ['id'=>$sub->id , 'current_page'=>($page->current_page-1)])}}">Previous</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Previous</a></li>
+			  	@endif
+
+				  @for($i=1; $i <= $page->totall_pages ; $i++)
+				  	@if($page->current_page == $i)
+				  		<li class="active"><a class="page-link" href="#">{{ $i }}</a></li>
+				  	@else
+				  		<li><a class="page-link" href="{{route('sortBy.priceLowestFirst' , ['id'=>$sub->id , 'current_page'=>$i])}}">{{ $i }}</a></li>
+				  	@endif	
+				  @endfor
+
+			  	@if($page->next)
+			  		<li><a href="{{route('sortBy.priceLowestFirst' , ['id'=>$sub->id , 'current_page'=>($page->current_page+1)])}}">Next</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Next</a></li>
+			  	@endif
+			@endif
+
+
+			<!-- sort in sub-category Highest Price -->
+			@if($sort_type == 'high')
+		  		@if($page->previous)
+			  		<li><a href="{{route('sortBy.priceHighestFirst' , ['id'=>$sub->id , 'current_page'=>($page->current_page-1)])}}">Previous</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Previous</a></li>
+			  	@endif
+
+				  @for($i=1; $i <= $page->totall_pages ; $i++)
+				  	@if($page->current_page == $i)
+				  		<li class="active"><a class="page-link" href="#">{{ $i }}</a></li>
+				  	@else
+				  		<li><a class="page-link" href="{{route('sortBy.priceHighestFirst' , ['id'=>$sub->id , 'current_page'=>$i])}}">{{ $i }}</a></li>
+				  	@endif	
+				  @endfor
+
+			  	@if($page->next)
+			  		<li><a href="{{route('sortBy.priceHighestFirst' , ['id'=>$sub->id , 'current_page'=>($page->current_page+1)])}}">Next</a></li>
+			  	@else
+			  		<li class="disabled"><a href="#">Next</a></li>
+			  	@endif
+			@endif
+
+			</ul>
+			</div>
+		@endif
+
+	@endif
+		  
+
+		<br class="clr"/>
 	</div>
 </div>
 
 	
 	
 
-			
+
 <br class="clr"/>
+
+
 </div>
 
 @stop

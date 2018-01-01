@@ -164,12 +164,12 @@
 
 		<div class="span7" style="width:795px">
 			<h3 style="margin:0;float:left">My Orders</h3>	
-			<a href="{{ route('user.create.address' , $user->id) }}" class="btn" style="font-weight: bold;float:right;margin-top:5px">Sort By</a>			
+			<!-- <a href="{{ route('user.create.address' , $user->id) }}" class="btn" style="font-weight: bold;float:right;margin-top:5px">Sort By</a> -->			
 		</div>
 
 
 		
-	
+
 <div class="span7" style="width:740px;padding-top: 15px">
 	@if( count($payments) > 0 )
 		@foreach( $payments as $payment)
@@ -179,22 +179,24 @@
 				<div>
 					
 					<h5>
-						<span>Date : </span> 
-						<span style="margin-left: 15%">Time : </span> 
+						<span>Date : {{$payment->created_at->toDayDateTimeString()}}</span> 
 						<span style="margin-left: 15%">Status : 
 							@if($payment->is_delivered == 0)
-								{{ "Processing" }}
+								{{ "Processing" }}<span style="margin-left: 8px;font-size: 18px;color:#a94442;"><i class="fa fa-times-circle-o"></i></span>
 							@else
-								{{ "Delivered" }}
+								{{ "Delivered" }}<span style="margin-left: 6px;font-size: 18px;color:#3c763d;"><i class="fa fa-check-circle-o"></i></span>
 							@endif
 						</span>
+						<?php $address = App\Address::find($payment->address_id); ?>
+						<p>Address: <span>{{$address->city . ", ".$address->area}}</span></p>
+						<p>Mobile: <span>{{$address->mobile}}</span></p>
 					</h5>
 					
 				</div>
 				<table class="table table-bordered" style="width:90%;">
 					<tbody>
 						<tr class="techSpecRow">
-							<td class="techSpecTD1">Payment Num</td>
+							<td class="techSpecTD1">Order Num</td>
 							<td class="techSpecTD2">Number of Products</td>
 							<td class="techSpecTD2">Totall-Price (EGP)</td>
 							<td class="techSpecTD2">totall-Discount (EGP)</td>

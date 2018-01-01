@@ -157,7 +157,7 @@
 			</div>
 		</div>
 
-
+		
 		<div class="span7" style="width:798px">
 			<h3 style="margin:0;float:left">Shipping Addresses</h3>	
 			<a href="{{ route('user.create.address' , $user->id) }}" class="btn" style="font-weight: bold;float:right;margin-top:5px">Create Address</a>			
@@ -170,17 +170,17 @@
 					<?php $i=1; ?>
 					@foreach( $user->addresses as $address )
 						@if($address == $user->addresses()->first())
-							<p style="margin: 0; margin-bottom: -10px;font-size: 18px;font-weight:bold">Address <?php echo $i; ?> (Primary)</p> <br>
+							<p style="margin: 0; margin-bottom: -10px;font-size: 18px;font-weight:bold">Address <?php echo $i; ?></p> <br>
 							<span style="font-size: 15px">{{ $address->city . ", " . $address->area . " ." }}</span> <br>
 							<span style="font-size: 14px;font-weight: bold">{{ $address->mobile }}</span>
-							<span> verified or not</span>
+							<!-- <span> verified or not</span> -->
 						@endif
 						@if($user->addresses()->count() > 1 && $address != $user->addresses()->first())
 							<hr class="soft" style="width:50%" />
 							<h4 style="margin: 0; margin-bottom: -10px">Address <?php echo $i; ?></h4> <br>
 							<span style="font-size: 15px">{{ $address->city . ", " . $address->area . " ." }}</span> <br>
 							<span style="font-size: 14px;font-weight: bold">{{ $address->mobile }}</span>
-							<span> verified or not</span>
+							<!-- <span> verified or not</span> -->
 
 						@endif
 						<?php $i++; ?>
