@@ -13,27 +13,33 @@ use App\Pagination;
 
 class FrontController extends Controller
 {
+     // API
+    public function api(){
+        $products = Product::all();
+        $data = ['products'=>$products];
+        return json_encode($data); 
+    }   
+    public function showForm(){
+        
+        return view('test');
+    }
+    public function getData(Request $request){
+        $id = $request->id;
+        $product = Product::findOrFail($id);
+        $product = ['product'=>$product];
+        $product = json_encode($product);
+
+        return response()->json($product);
+    }
+
+
     public function home(){
     	$latest_products = Product::where('offer_price',0)->orWhere('offer_price',null)->orderBy('id','DESC')->take(6)->get();
-        $offer_products = [];
+        $latest_products = Product::productsIfOutOfStock($latest_products);
+        
         $products = Product::where('offer_price', '!=' , 0)->get();
-        $count = 1;
-        $remind_products = [];
-        foreach( $products as $product ){
-            foreach ($product->colors as $color ) {
-                $color_product = $product->colors()->where('color_id',$color->id)->first()->pivot;
-                if( $color_product->quantity > 0 ){
-                    if($count <= 4){
-                        $offer_products[] = $product;
-                        $count++;
-                        break;
-                    }
-                    $remind_products[] = $product;
-                    break;
-                }
-            }
-        }
-    	return view('front.home',compact('latest_products','offer_products','remind_products'));
+        $offer_products = Product::productsIfOutOfStock($products);
+    	return view('front.home',compact('latest_products','offer_products'));
 
     }   
 
@@ -45,12 +51,18 @@ class FrontController extends Controller
         $count = Product::countIfOutOfStock($sub->products);
         $products = Product::productsIfOutOfStock($products);
         $sort_type = null;
-        
-        $page = new Pagination($products,9,$current_page);
-        $products = $page->productsPerPage($products);
-        if(!$products){
-            return redirect()->route('error404');
+        if($products){
+            $page = new Pagination($products,9,$current_page);
+            $products = $page->productsPerPage($products);
+            if(!$products){
+                return redirect()->route('error404');
+            }
+        }else{
+            $page = 0;
+            $products = 0;
         }
+        
+        
         
     	return view('front.sub-category', compact('sub','products','count','sort_type','page'));
     }
@@ -62,6 +74,8 @@ class FrontController extends Controller
         $count = Product::countIfOutOfStock(Product::where('offer_price','!=',0)->get());
         return view('front.special-offers',compact('products','count') );
     }
+
+    
 
 
     // Disply default product Color
@@ -155,10 +169,15 @@ class FrontController extends Controller
         $count = Product::countIfOutOfStock($products);
 
         $products = Product::productsIfOutOfStock($products);
-        $page = new Pagination($products,9,$current_page);
-        $products = $page->productsPerPage($products);
-        if(!$products){
-            return redirect()->route('error404');
+        if($products){
+            $page = new Pagination($products,9,$current_page);
+            $products = $page->productsPerPage($products);
+            if(!$products){
+                return redirect()->route('error404');
+            }
+        }else{
+            $page = 0;
+            $products = 0;
         }
 
         $sort_type = 'disc';
@@ -172,10 +191,16 @@ class FrontController extends Controller
         $count = Product::countIfOutOfStock($products);
 
         $products = Product::productsIfOutOfStock($products);
-        $page = new Pagination($products,9,$current_page);
-        $products = $page->productsPerPage($products);
-        if(!$products){
-            return redirect()->route('error404');
+        
+        if($products){
+            $page = new Pagination($products,9,$current_page);
+            $products = $page->productsPerPage($products);
+            if(!$products){
+                return redirect()->route('error404');
+            }
+        }else{
+            $page = 0;
+            $products = 0;
         }
 
 
@@ -208,10 +233,16 @@ class FrontController extends Controller
         $count = count( $products );
 
         $products = Product::productsIfOutOfStock($products);
-        $page = new Pagination($products,9,$current_page);
-        $products = $page->productsPerPage($products);
-        if(!$products){
-            return redirect()->route('error404');
+        
+        if($products){
+            $page = new Pagination($products,9,$current_page);
+            $products = $page->productsPerPage($products);
+            if(!$products){
+                return redirect()->route('error404');
+            }
+        }else{
+            $page = 0;
+            $products = 0;
         }
 
         $sort_type = 'low';
@@ -244,10 +275,16 @@ class FrontController extends Controller
         $count = count( $products );
 
         $products = Product::productsIfOutOfStock($products);
-        $page = new Pagination($products,9,$current_page);
-        $products = $page->productsPerPage($products);
-        if(!$products){
-            return redirect()->route('error404');
+        
+        if($products){
+            $page = new Pagination($products,9,$current_page);
+            $products = $page->productsPerPage($products);
+            if(!$products){
+                return redirect()->route('error404');
+            }
+        }else{
+            $page = 0;
+            $products = 0;
         }
 
         $sort_type = 'high';
@@ -260,4 +297,20 @@ class FrontController extends Controller
 
 
     
+    //  ----------- test -------
+    public function cats(){
+        
+
+        return view('test');
+    }
+
+    public function ajaxCats(){
+        $data = Category::all();
+        return response()->json($data);
+    }
+
+    public function newCat(Request $request){
+        $cat = Category::create(['name'=>$request->name]);
+        // return response()->json();
+    }
 }

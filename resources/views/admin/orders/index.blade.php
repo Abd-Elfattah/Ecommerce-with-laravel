@@ -93,9 +93,9 @@
 
     <!-- Pagination -->
     <div class="pagination" style="margin-left: 450px">
-    		
-    		{{$payments->render()}}
-
+    		@if($payments)
+    		  {{$payments->render()}}
+            @endif
     </div>
 
 

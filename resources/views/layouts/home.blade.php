@@ -45,6 +45,7 @@
 
 
 
+	<link rel="stylesheet" href="{{asset('css/jquery.rateyo.css')}}"/>
     
 
 	<style type="text/css" id="enject"></style>
@@ -365,8 +366,8 @@
 			 </div>
 			<div class="span3">
 				<h5>OUR OFFERS</h5>
-				<a href="#">NEW PRODUCTS</a> 
-				<a href="#">TOP SELLERS</a>  
+				<!-- <a href="#">NEW PRODUCTS</a> 
+				<a href="#">TOP SELLERS</a>   -->
 				<a href="{{ route('offers') }}">SPECIAL OFFERS</a>  
 			 </div>
 			<!-- <div id="socialMedia" class="span3 pull-right">
@@ -395,6 +396,7 @@
 	<script src="{{ asset('themes/js/bootshop.js') }}"></script>
     <script src="{{ asset('themes/js/jquery.lightbox-0.5.js') }}"></script>
 
+  	<script src="{{asset('js/jquery.rateyo.js')}}"></script>
 
     <script type="text/javascript">
     	

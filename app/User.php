@@ -42,6 +42,9 @@ class User extends Authenticatable
         return $this->hasManyThrough('App\Order' , 'App\Payment');
     }
 
+    public function rating(){
+        return $this->hasOne('App\Rating');
+    }
 
 
 

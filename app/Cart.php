@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Cart 
 {
-    public $items = null;
+    public $items = [];
     public $totPrice = 0;
     public $totDisc = 0;
     Public $totQty = 0;
@@ -48,10 +48,13 @@ class Cart
 
 
     	// Items
-    	$this->items[$color_product->id] = $item;
-    	$this->totPrice += $item['price'];
-    	$this->totDisc += $item['discount'];
-    	$this->totQty++;
+        if(! array_key_exists($color_product->id, $this->items) ){
+            $this->items[$color_product->id] = $item;
+            $this->totPrice += $item['price'];
+            $this->totDisc += $item['discount'];
+            $this->totQty++;
+        }
+    	
     }
 
     public function remove($product_id ,$color_id){

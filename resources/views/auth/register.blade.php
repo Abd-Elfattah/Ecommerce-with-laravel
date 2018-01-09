@@ -25,14 +25,14 @@
                             <label for="firstname" class="col-md-4 control-label">First Name </label>
 
                             <div class="col-md-6">
-                                <input id="firstname" type="text" class="form-control" name="firstname" value="{{ old('firstname') }}">
+                                <input id="firstname" type="text" placeholder="First Name" class="form-control" name="firstname" value="{{ old('firstname') }}">
 
-                                <span class="fail" style="display:none;color:#b94a48;margin-left: 20px;font-size: 15px;font-weight: bold">
+                                <!-- <span class="fail" style="display:none;color:#b94a48;margin-left: 20px;font-size: 15px;font-weight: bold">
                                 <i class="fa fa-times-circle"></i><span></span>
                                 </span>
                                 <span class="success" style="display:none;color:#3c763d;;margin-left: 20px;font-size: 15px;font-weight: bold">
                                 <i class="fa fa-check-circle"></i><span></span>
-                                </span>
+                                </span> -->
 
                                 @if ($errors->has('firstname'))
                                     <span class="help-block" style="color:#b94a48;margin-left: 190px;">
@@ -47,7 +47,7 @@
                             <label for="lastname" class="col-md-4 control-label">Last Name </label>
 
                             <div class="col-md-6">
-                                <input id="lastname" type="text" class="form-control" name="lastname" value="{{ old('lastname') }}">
+                                <input id="lastname" placeholder="Last Name" type="text" class="form-control" name="lastname" value="{{ old('lastname') }}">
                                 <span class="fail" style="display:none;color:#b94a48;margin-left: 20px;font-size: 15px;font-weight: bold">
                                 <i class="fa fa-times-circle"></i><span></span>
                                 </span>
@@ -68,7 +68,7 @@
                             <label for="email" class="col-md-4 control-label">E-Mail Address </label>
 
                             <div class="col-md-6">
-                                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" >
+                                <input id="email" placeholder="E-mail" type="email" class="form-control" name="email" value="{{ old('email') }}" >
 
                                 @if ($errors->has('email'))
                                     <span class="help-block" style="color:#b94a48;margin-left: 190px;">
@@ -82,7 +82,7 @@
                             <label for="password" class="col-md-4 control-label">Password </label>
 
                             <div class="col-md-6">
-                                <input id="password" type="password" class="form-control" name="password" >
+                                <input placeholder="Password" id="password" type="password" class="form-control" name="password" >
 
                                 @if ($errors->has('password'))
                                     <span class="help-block" style="color:#b94a48;margin-left: 190px;">
@@ -96,7 +96,7 @@
                             <label for="password-confirm" class="col-md-4 control-label">Confirm Password </label>
 
                             <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" >
+                                <input placeholder="Confirm Password" id="password-confirm" type="password" class="form-control" name="password_confirmation" >
                             </div>
                         </div>
 

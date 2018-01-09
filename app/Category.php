@@ -12,12 +12,16 @@ class Category extends Model
     protected $fillable = [ 'name' ];
 
 
-    public function setNameAttribute($value){
-    	$this->attributes['name'] = ucwords($value);
-    }
+    
 
 
     public function subcategories(){
     	return $this->hasMany('App\Subcategory');
     }
+
+
+    public function setNameAttribute($value){
+    	$this->attributes['name'] = ucwords($value);
+    }
+
 }

@@ -51,16 +51,6 @@ class CartController extends Controller
 
                 }
 
-                // if( $product['price'] != $price){
-                //     Session::flash('cartFailed' , 'Price has Changed From ' . $product['price'] . '(EGP) To ' . $price .'EGP');
-                //     $quantity = $product['quantity'];
-                //     $cart->remove($product_id,$color_id);
-                //     $cart->add($product_id,$color_id);
-                //     $cart->addCount($product_id ,$color_id,$quantity);
-                // }
-                
-
-                
                 
             }
         }
@@ -111,8 +101,7 @@ class CartController extends Controller
     public function checkOut(Request $request){
         $cart = Session::get('cart');
         if(Auth::user()->addresses->count() == 0){
-            Session::flash('cartFailed' , 'You Havn\'t any Addresses, Update Your Profile');
-            return redirect()->back();
+            return redirect()->route('user.create.address',Auth::user()->id);
         }
         if($request->address_id == null){
             Session::flash('cartFailed' , 'Select Address to Checkout');

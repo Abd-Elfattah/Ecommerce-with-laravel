@@ -37,6 +37,10 @@ class Subcategory extends Model
         return $this->hasManyThrough('App\Product' , 'App\Brand');
     }
 
+    public function setNameAttribute($name){
+        $this->attributes['name'] = ucwords($name);
+    }
+
 
 
 }

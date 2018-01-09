@@ -48,8 +48,8 @@
 
 <div class="span9">	
 
-<div class="well well-small" style="height: 330px">
-<h4><a href="{{route('offers')}}">Best Offers</a> <small class="pull-right">{{ count($offer_products)+count($remind_products) . " Products" }}</small></h4>
+<div class="well well-small" style="height: 350px">
+<h4><a href="{{route('offers')}}">Best Offers</a> <small class="pull-right">{{ count($offer_products) . " Offers Available" }}</small></h4>
 <div class="row-fluid">
 	<div id="featured" class="carousel slide" >
 		<div class="carousel-inner" >
@@ -57,8 +57,8 @@
 
 			<div class="item active">
 			  <ul class="thumbnails">
-			  <?php $count = 1; ?>
-			  @foreach($offer_products as $product)
+			  	<?php $offers = array_slice($offer_products, 0 , 4) ?>
+			  @foreach($offers as $product)
 				@foreach( $product->colors()->withPivot('id')->get() as $color )
 					@if( $color->pivot->quantity == 0 )	
 						<?php continue ?>
@@ -74,6 +74,11 @@
 								<img height="160px" src="{{ asset($product->photos()->where('color_id', $color->id)->first()->path ) }}" alt=""></a>
 							<div class="caption">
 							  <h5><a style="color:#555" href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">{{ $product->name }}</a></h5>
+							  <!-- Rating -->
+							  <div style="margin-left:30px">
+							  		<div id="productRating{{$product->id}}" class="pull-left"></div>
+							  		<span id="ratingUsers{{$product->id}}"></span>
+							  </div>
 							   <h4><a class="btn" href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">VIEW</a> 
 							   	<span class="price pull-right">{{$product->offer_price}} EGP</span>
 							   	<p class="before-Discount">{{$product->price}} EGP</p>
@@ -86,22 +91,23 @@
 						<?php break; ?>
 					@endif
 				@endforeach
-				<?php 
-					unset($offer_products[$count]);
-					$count++;
-					if( $count > 4){ break; }
-					
-				?>
 			@endforeach
 			  </ul>
 			</div>
 
 
-			<?php $count=1; ?>
-			@for($i=1; count($remind_products) > 0 ; $i++)
+			@if($count = count($offer_products) > 4)
+			<?php $offers = array_slice($offer_products, 4) ?>
+	        @for($i=1;count($offers) > 0 ; $i++)
+				<?php 
+    				if($i==1){
+    				      $offers = array_slice($offer_products,$i*4,4);
+    				}
+				?>
 			<div class="item">
 			  <ul class="thumbnails">
-			  @foreach($remind_products as $product)
+		       
+			  @foreach($offers as $product)
 				@foreach( $product->colors()->withPivot('id')->get() as $color )
 					@if( $color->pivot->quantity == 0 )	
 						<?php continue ?>
@@ -117,6 +123,11 @@
 								<img height="160px" src="{{ asset($product->photos()->where('color_id', $color->id)->first()->path ) }}" alt=""></a>
 							<div class="caption">
 							  <h5><a style="color:#555" href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">{{ $product->name }}</a></h5>
+							  <!-- Rating -->
+							  <div style="margin-left:20px">
+							  		<div id="productRating{{$product->id}}" class="pull-left"></div>
+							  		<span id="ratingUsers{{$product->id}}"></span>
+							  </div>
 							   <h4><a class="btn" href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">VIEW</a> 
 							   	<span class="price pull-right">{{$product->offer_price}} EGP</span>
 							   	<p class="before-Discount">{{$product->price}} EGP</p>
@@ -129,18 +140,21 @@
 						<?php break; ?>
 					@endif
 				@endforeach
-				<?php 
-					unset($remind_products[$count-1]);
-					$count++;
-					if( $count > ($i*4)){ break; }
-				?>
+				
 			@endforeach
-
+			
 			  </ul>
 			</div>
+			<?php 
+				
+				$offers = array_slice($offer_products,($i+1)*4,4);
+				if(count($offers) == 0){
+				    break;
+				}
+			?>
 			@endfor
 
-
+			@endif
 
 		</div>
 
@@ -169,7 +183,15 @@
 							<img class="product-image" src="{{ asset($color->photos()->where('product_id',$product->id)->first()->path) }}" alt=""/>
 							</a>
 							<div class="caption">
-							  <h5 class="product-name" style="margin-bottom: 30px;"><a  href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">{{$product->name}}</a></h5>
+							  <h5 class="product-name" style="margin-bottom: 10px;"><a  href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">{{$product->name}}</a></h5>
+
+							  <!-- Rating -->
+							  <div style="margin-left:70px">
+							  		<div id="productRating{{$product->id}}" class="pull-left"></div>
+							  		<span id="ratingUsers{{$product->id}}"></span>
+							  </div>
+							  
+
 
 						<!-- if No offer price found -->
 						@if($product->offer_price == 0)
@@ -197,12 +219,12 @@
 							
 						   	<span class="price">{{$product->price}} EGP</span>				
 						   	</h4>
-						   	<span class="discount" style="position:relative;top:-310px;left:-14px;opacity:0">
-								0% off
-							</span>
-						   	<p class="before-discount" style="opacity:0">
-									0 EGP
-							</p>
+						 <!--  	<span class="discount" style="position:relative;top:-310px;left:-14px;opacity:0">-->
+							<!--	0% off-->
+							<!--</span>-->
+						 <!--  	<p class="before-discount" style="opacity:0">-->
+							<!--		0 EGP-->
+							<!--</p>-->
 						@endif
 						<!-- if No offer price found -->
 
@@ -229,7 +251,32 @@
 
 
 @section('scripts')
-		
+		<script type="text/javascript">
+			$(document).ready(function(){
+
+				var url = "{{route('homeRating')}}";
+				$.get(url,function(data){
+					console.log(data);
+						$.each(data,function(index,product){
+							var id=product[0];
+							var rating=product[1];
+							var count=product[2];
+							$("#productRating"+id).rateYo({
+							    rating: rating,
+							    starWidth:"13px",
+							    spacing:"5px",
+							    readOnly:true
+							});
+
+							$('#ratingUsers'+id).text("("+ count +")");
+							
+						});
+											
+				});
+
+				
+			});
+		</script>
 
 	
 @stop

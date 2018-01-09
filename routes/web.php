@@ -18,12 +18,20 @@ use Illuminate\Support\Facades\Session;
 |
 */
 
-
+// Test ---- Ajax --------
+route::get('displyCats' , 'FrontController@cats')->name('all.cats');
+route::get('displyAjaxCats' , 'FrontController@ajaxCats')->name('ajax.cats');
+Route::post('insertCat','FrontController@newCat')->name('newCat');
 Route::get('/test' , function(){
-	return public_path();
+	Session::forget('cart');
 
 })->name('test');
 
+
+// --- API ---
+Route::get('Eco-home/api' , 'FrontController@api')->name('api');
+Route::get('Eco-home/showForm','FrontController@showForm');
+Route::get('Eco-home/getData' , 'FrontController@getData')->name('getData');
 
 // Display All Categories
 View::composer('*', function($view)
@@ -163,6 +171,10 @@ Route::group(['middleware'=>['profile']] , function(){
 	Route::get('Eco-home/user/{user_id}/orders' , 'ProfileController@showOrders')->name('user.orders');
 });
 
+// Rating Controller
+Route::get('makeRating','RatingController@makeRate')->name('make.rating');
+Route::get('product/rating','RatingController@productRatings')->name('productRatings');
+Route::get('home/rating','RatingController@homeRating')->name('homeRating');
 
 
 

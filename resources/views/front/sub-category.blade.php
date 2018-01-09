@@ -34,15 +34,10 @@
 	products are available </small></h3>	
 	<hr class="soft"/>
 
-	@if($count == 0)
-	<div class="span9">
-		<h3>Empty Category</h3>
-	</div>
-	@endif
+	
 	
 
-
-	@if($count > 0)
+	@if(! ($count == 0 && $sort_type==null))
 	<form class="form-horizontal span9">
 		<div class="control-group">
 		  <label class="control-label alignL" style="font-weight: bold">Sort By </label>
@@ -102,10 +97,14 @@
             @endif
 		</div>
 	</form>
-
-		<br class="clr"/>
-	@endif	  
-
+	@endif
+		
+	@if($count == 0)
+	<div class="span9">
+		<h3>No Products</h3>
+	</div>
+	@endif  
+	<br class="clr"/>
 
 
 
@@ -127,9 +126,13 @@
 							<img class="product-image" src="{{ asset($color->photos()->where('product_id',$product->id)->first()->path) }}" alt=""/>
 							</a>
 							<div class="caption">
-							  <h5 class="product-name" style="margin-bottom: 30px;"><a  href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">{{$product->name}}</a></h5>
+							  <h5 class="product-name" style="margin-bottom: 10px;"><a  href="{{ route('product.color' , ['product_id' => $product->id , 'color_id' =>$color->id]) }}">{{$product->name}}</a></h5>
 
-
+							  <!-- Rating -->
+							  <div style="margin-left:70px">
+							  		<div id="productRating{{$product->id}}" class="pull-left"></div>
+							  		<span id="ratingUsers{{$product->id}}"></span>
+							  </div>
 
 						<!-- if offer price found -->
 						@if($product->offer_price != 0)								  
@@ -388,9 +391,32 @@
 							$('#brands').show();
 							window.stop();
 						}
-					});					
+					});			
 
+
+					// Rating 
+				var url = "{{route('homeRating')}}";
+				$.get(url,function(data){
+					console.log(data);
+						$.each(data,function(index,product){
+							var id=product[0];
+							var rating=product[1];
+							var count=product[2];
+							$("#productRating"+id).rateYo({
+							    rating: rating,
+							    starWidth:"13px",
+							    spacing:"5px",
+							    readOnly:true
+							});
+
+							$('#ratingUsers'+id).text("("+ count +")");
+							
+						});
+											
 				});
+
+
+			});
 
 			
 

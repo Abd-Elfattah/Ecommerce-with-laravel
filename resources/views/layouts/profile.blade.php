@@ -149,7 +149,7 @@
 	<!-- Search -->
 
 
-    <ul id="topMenu" class="nav pull-left" style="margin-left:120px;margin-bottom:0px">
+    <ul id="topMenu" class="nav pull-left" style="margin-left:190px;margin-bottom:0px">
 	 <!-- <li class=""><a href="{{url('/Eco-home/special-offers')}}">Special Offers</a></li> -->
 	 <!-- <li class=""><a href="normal.html">Delivery</a></li> -->
 	 <!-- <li class=""><a href="contact.html">Contact</a></li> -->
@@ -269,8 +269,8 @@
 			 </div>
 			<div class="span3">
 				<h5>OUR OFFERS</h5>
-				<a href="#">NEW PRODUCTS</a> 
-				<a href="#">TOP SELLERS</a>  
+				<!-- <a href="#">NEW PRODUCTS</a> 
+				<a href="#">TOP SELLERS</a>   -->
 				<a href="{{ route('offers') }}">SPECIAL OFFERS</a>  
 			 </div>
 		 </div>
