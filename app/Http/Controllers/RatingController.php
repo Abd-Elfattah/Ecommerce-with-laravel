@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class RatingController extends Controller
 {
+	public function index(){
+		$ratings = Rating::paginate(10);
+		return view('admin.comments',compact('ratings'));
+	}
+
+
+
     public function makeRate(Request $request){
     	$input = $request->all();
     	$rating = Rating::create($input);

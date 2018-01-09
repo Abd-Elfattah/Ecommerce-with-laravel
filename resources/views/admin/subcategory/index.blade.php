@@ -55,7 +55,7 @@
                     <th>Brands</th>
                     <th>Created At</th>
                     <th>Updated At</th>
-                    <th>Edit</th>
+                    <!-- <th>Edit</th> -->
                   </tr>
                 </thead>
                 <tbody>
@@ -68,7 +68,7 @@
                         <td><a href="{{ route('sub.brands' , $sub->id) }}">View</a></td>
                         <td>{{$sub->created_at->diffForHumans()}}</td>
                         <td>{{$sub->updated_at->diffForHumans()}}</td>
-                        <td><a href="{{ route('sub.edit' , $sub->id) }}">Edit</a></td>
+                        <!-- <td><a href="{{ route('sub.edit' , $sub->id) }}">Edit</a></td> -->
                       </tr>
                     @endforeach
                 @endif

@@ -9,12 +9,7 @@
                             Admin Page
                             
                         </h1>
-                        <ol class="breadcrumb">
-                            <li>
-                                <i class="fa fa-dashboard"></i>  <a href="index.html">Dashboard</a>
-                            </li>
-                            
-                        </ol>
+                        
 
                 <div class="row">
 
@@ -26,12 +21,12 @@
                                         <i class="fa fa-support fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">13</div>
+                                        <div class="huge">{{App\User::all()->count()}}</div>
                                         <div>Users</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="{{route('admin.users.index')}}">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -49,12 +44,12 @@
                                         <i class="fa fa-shopping-cart fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">124</div>
-                                        <div>New Orders!</div>
+                                        <div class="huge">{{App\Payment::all()->count()}}</div>
+                                        <div>Orders</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="{{route('payments')}}">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -71,12 +66,12 @@
                                         <i class="fa fa-comments fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">26</div>
-                                        <div>New Comments!</div>
+                                        <div class="huge">{{App\Rating::all()->count()}}</div>
+                                        <div>Comments</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="{{route('comments')}}">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -93,12 +88,12 @@
                                         <i class="fa fa-tasks fa-5x"></i>
                                     </div>
                                     <div class="col-xs-9 text-right">
-                                        <div class="huge">12</div>
-                                        <div>New Tasks!</div>
+                                        <div class="huge">{{App\Product::all()->count()}}</div>
+                                        <div>Products</div>
                                     </div>
                                 </div>
                             </div>
-                            <a href="#">
+                            <a href="{{route('products.index')}}">
                                 <div class="panel-footer">
                                     <span class="pull-left">View Details</span>
                                     <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>

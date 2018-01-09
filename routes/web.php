@@ -121,6 +121,10 @@ Route::group(['middleware'=> ['admin']] , function(){
 	Route::get('admin/payments/delivered' , 'PaymentController@showDelivered')->name('DeliveredPayments');
 	Route::get('admin/payments/processing' , 'PaymentController@showProcessing')->name('ProcessingPayments');
 	Route::get('admin/payments/{id}/details' , 'PaymentController@orderDetails')->name('orderDetails');
+
+
+	// Rating Controller
+	Route::get('admin/comments','RatingController@index')->name('comments');
 });
 
 
