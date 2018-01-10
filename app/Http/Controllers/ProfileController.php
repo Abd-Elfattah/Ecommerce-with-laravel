@@ -29,7 +29,7 @@ class ProfileController extends Controller
     		'area' => 'required', 
     		'location_type' => 'required', 
     		// 'mobile' => 'required|unique:addresses|Numeric' 
-            'mobile' => 'unique:addresses|required|regex:/(01)[0-9]{9}/'
+            'mobile' => 'unique:addresses|required|regex:/(01)[0-9]{9}/|max:11'
     	]);
 
     	$user = User::findOrFail($id);

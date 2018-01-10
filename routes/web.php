@@ -29,9 +29,8 @@ Route::get('/test' , function(){
 
 
 // --- API ---
-Route::get('Eco-home/api' , 'FrontController@api')->name('api');
-Route::get('Eco-home/showForm','FrontController@showForm');
-Route::get('Eco-home/getData' , 'FrontController@getData')->name('getData');
+Route::get('Eco-home/api/home' , 'FrontController@apiHome')->name('api');
+
 
 // Display All Categories
 View::composer('*', function($view)

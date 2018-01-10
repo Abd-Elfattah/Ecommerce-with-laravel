@@ -14,23 +14,53 @@ use App\Pagination;
 class FrontController extends Controller
 {
      // API
-    public function api(){
-        $products = Product::all();
-        $data = ['products'=>$products];
-        return json_encode($data); 
-    }   
-    public function showForm(){
-        
-        return view('test');
-    }
-    public function getData(Request $request){
-        $id = $request->id;
-        $product = Product::findOrFail($id);
-        $product = ['product'=>$product];
-        $product = json_encode($product);
+    public function apiHome(){
+        $latest_products = Product::where('offer_price',0)->orWhere('offer_price',null)->orderBy('id','DESC')->take(6)->get();
+        $latest_products = Product::productsIfOutOfStock($latest_products);
+        $latest = [];
+        foreach($latest_products as $product){
+            $array['id'] = $product->id;
+            $array['name'] = $product->name;
+            $array['color'] = $product->colors()->first()->name;
+            $array['brand'] = $product->brand->name;
+            $array['description'] = $product->description;
+            $array['price'] = $product->price;
+            
+            $array['offer_price'] = 0;
+            $array['discount'] = 0;
+            $array['quantity'] = $product->colors()->first()->pivot->quantity;
+            $color_id = $product->colors()->first()->id;
+            $photo = Photo::where(['product_id'=>$product->id,'color_id'=>$color_id])->first()->path;
+            $array['photo'] = public_path().$photo;
+            $latest[] = $array;
 
-        return response()->json($product);
-    }
+        }
+        $products = Product::where('offer_price', '!=' , 0)->get();
+        $offer_products = Product::productsIfOutOfStock($products);
+        $offers=[];
+        foreach($offer_products as $product){
+            $array['id'] = $product->id;
+            $array['name'] = $product->name;
+            $array['color'] = $product->colors()->first()->name;
+            $array['brand'] = $product->brand->name;
+            $array['description'] = $product->description;
+            $array['price'] = $product->price;
+            
+            $array['offer_price'] = $product->offer_price;
+            $array['discount'] = floor(100-(($product->offer_price/$product->price)*100))."%";
+            $array['quantity'] = $product->colors()->first()->pivot->quantity;
+            $color_id = $product->colors()->first()->id;
+            $photo = Photo::where(['product_id'=>$product->id,'color_id'=>$color_id])->first()->path;
+            $array['photo'] = public_path().$photo;
+            $offers[] = $array;
+
+        }
+
+        // $data = ['offer_products'=>$offer_products,'latest_products'=>$latest_products];
+        $data = ['offerProducts'=>$offers,'latestProducts'=>$latest];
+        return json_encode($data);
+    }   
+    
 
 
     public function home(){
